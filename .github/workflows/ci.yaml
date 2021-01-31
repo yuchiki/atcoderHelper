@@ -15,7 +15,7 @@ on:
 jobs:
   build:
     name: build
-    <<: +default-strategy-and-os
+    <<: *default-strategy-and-os
     steps:
       - uses: actions/checkout@v2
       - name: enable problem matcher
