@@ -56,7 +56,7 @@ jobs:
   notification:
     name: notification
     if: always()
-    #    if: always() && github.event.event_name == 'push'
+    #    if: always() && github.event.event_name == 'push'                          aa
     needs:
       - build
       - test
