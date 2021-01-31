@@ -7,7 +7,7 @@ FLAGS := -ldflags "$(LD_FLAGS)"
 
 .PHONY: clean ach test lint yamllint dry-release
 
-all: clean yamllint lint ach test dry-release
+all: yamllint lint ach test dry-release
 
 dry-release:
 	goreleaser --snapshot --skip-publish --rm-dist
