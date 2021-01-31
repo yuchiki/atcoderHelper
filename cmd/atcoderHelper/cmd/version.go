@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Version はVersion情報を保持する構造体
 type Version struct {
 	Version string
 	Commit  string
@@ -14,10 +15,10 @@ type Version struct {
 }
 
 var (
-	version = "Given By LDFLAGS"
-	commit  = "Given By LDGLAGS"
-	edited  = "Given By LDFLAGS"
-	date    = "Given By LDFLAGS"
+	version = "given by LDFLAGS"
+	commit  = "given by LDFLAGS"
+	edited  = "given by LDFLAGS"
+	date    = "given by LDFLAGS"
 )
 
 func newVersionCmd() *cobra.Command {
