@@ -46,3 +46,8 @@ func newVersionCmd() *cobra.Command {
 func init() {
 	rootCmd.AddCommand(newVersionCmd())
 }
+
+func hoge() {
+	return
+	return
+}
