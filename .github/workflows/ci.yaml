@@ -71,8 +71,6 @@ jobs:
         run: |
           if [ ${WORKFLOW_CONCLUSION} != success ]; then
             echo "::set-output name=message::@yuchiki"
-          else
-            echo "::set-output name=message::"
           fi
       - name: notify to discord
         uses: sarisia/actions-status-discord@v1
@@ -80,4 +78,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           status: ${{ env.WORKFLOW_CONCLUSION }}
-          description: ${{ steps.create-snd-message.outputs.message }}
+          description: ${{ steps.create-send-message.outputs.message }}
