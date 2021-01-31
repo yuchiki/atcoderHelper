@@ -66,11 +66,8 @@ jobs:
       - uses: technote-space/workflow-conclusion-action@v1
       - name: create send message
         id: create-send-message
-        env:
-          WORKFLOW_STATUS: ${{ env.WORKFLOW_CONCLUSION }}
-          DISCORD_NOTIFICATION_ID:  ${{ secrets.DISCORD_NOTIFICATION_ID }}
         run: |
-          if [ ${WORKFLOW_CONCLUSION} != success ]; then
+          if [ ${{env.WORKFLOW_CONCLUSION}} != success ]; then
             echo "::set-output name=message::<@${{DISCORD_NOTIFICATION_ID}}>"
           fi
       - name: notify to discord
