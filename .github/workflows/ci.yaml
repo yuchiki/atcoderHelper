@@ -68,7 +68,8 @@ jobs:
         id: create-send-message
         run: |
           if [ ${{env.WORKFLOW_CONCLUSION}} != success ]; then
-            echo "::set-output name=message::<@${{secrets.DISCORD_NOTIFICATION_ID}}>"
+            echo -n "::set-output name=message::"
+            echo -n "<@${{secrets.DISCORD_NOTIFICATION_ID}}>"
           fi
       - name: notify to discord
         uses: sarisia/actions-status-discord@v1
