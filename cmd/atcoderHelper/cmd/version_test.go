@@ -15,7 +15,7 @@ func TestVersion_Execute(t *testing.T) {
 	cmd := newVersionCmd()
 	jsonFieldsString := []string{
 		`"Version":"given by LDFLAGS"`,
-		`"Commit ":"given by LDFLAGS"`,
+		`"Commit":"given by LDFLAGS"`,
 		`"Edited":"given by LDFLAGS"`,
 		`"Date":"given by LDFLAGS"`,
 	}
