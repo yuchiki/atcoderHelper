@@ -20,7 +20,7 @@ jobs:
       - name: enable problem matcher
         run: echo "::add-matcher::.github/problem-matcher.json"
       - name: setup go
-        uses: actions/setup-gp@v1
+        uses: actions/setup-go@v1
         with:
           go-version: ${{matrix.go-version}}
       - name: build
@@ -37,7 +37,7 @@ jobs:
       - name: enable problem matcher
         run: echo "::add-matcher::.github/problem-matcher.json"
       - name: setup go
-        uses: actions/setup-gp@v1
+        uses: actions/setup-go@v1
         with:
           go-version: ${{matrix.go-version}}
       - name: test
