@@ -1,0 +1,17 @@
+builds:
+  - main: ./cmd/atcoderHelper/main.go
+    binary: ach
+    ldflags:
+      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.version=\
+        {{.Version}}"
+      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.commit=\
+        {{.Commit}}"
+      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.edited=''"
+      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.date=\
+        {{.Date}}"
+    goarch:
+      - amd64
+      - arm64
+archives:
+  -
+    format: zip
