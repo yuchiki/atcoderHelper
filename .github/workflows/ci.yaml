@@ -1,12 +1,14 @@
 name: golang-ci
 on:
   push:
+    tags:
+      - v+
     branches:
       - master
   pull_request:
 jobs:
-  checks:
-    name: run
+  build:
+    name: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,6 +17,22 @@ jobs:
     - name: test
       uses: cedrickring/golang-action/go1.14@1.6.0
       with:
-        args: make test
-    - name: detect format diff
-      run: git diff --exit-code
+        args: go build ./...
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: enable problem matcher
+      run: echo "::add-matcher::.github/go-test-problem-matcher.json"
+    - name: test
+      uses: cedrickring/golang-action/go1.14@1.6.0
+      with:
+        args: go test ./...
+  lint:
+    name: lint
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
