@@ -4,6 +4,9 @@ on:  # yamllint disable-line rule:truthy
   repository_dispatch:
     types:
       - ci-passed
+  push:
+    branches:
+      - fix-ci-passed-workflow
 jobs:
   release:
     name: release
