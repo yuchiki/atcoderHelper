@@ -22,9 +22,10 @@ jobs:
       - name: setup go
         uses: actions/setup-gp@v1
         with:
-          go-version: ${{matrix.go}}
+          go-version: ${{matrix.go-version}}
       - name: build
         run:  go build ./...
+  test:
     name: test
     strategy:
       matrix:
@@ -38,7 +39,7 @@ jobs:
       - name: setup go
         uses: actions/setup-gp@v1
         with:
-          go-version: ${{matrix.go}}
+          go-version: ${{matrix.go-version}}
       - name: test
         run:  go test ./...
   lint:
