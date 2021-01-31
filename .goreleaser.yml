@@ -19,4 +19,5 @@ archives:
   -
     format: zip
 release:
+  github:
   prerelease: auto
