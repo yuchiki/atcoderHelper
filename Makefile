@@ -12,7 +12,6 @@ all: yamllint lint ach test
 ach: test
 	go build ${FLAGS} -o ./bin/ach ./cmd/atcoderHelper/main.go
 
-# go vet は保守的なcheckをするので、厳しすぎるかもしれない。問題があるようなら、suggestionだけして、CIの成否には関与しないように変更する。
 test:
 	go test ./...
 
