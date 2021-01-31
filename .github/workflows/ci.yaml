@@ -12,7 +12,7 @@ jobs:
     name: build
     strategy:
       matrix:
-        go-version: [1.14"]  # release時には 1.10 ~ 1.15 で確かめる
+        go-version: ["1.14"]  # release時には 1.10 ~ 1.15 で確かめる
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{matrix.os}}
     steps:
