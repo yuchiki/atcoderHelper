@@ -47,5 +47,6 @@ jobs:
     name: yamllint
     run-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
-      - actions/checkout@v2
-      - uses: ibiqlik/action-yamllint@v3
+      - uses: actions/checkout@v2
+      - name: yamllint
+        uses: ibiqlik/action-yamllint@v3
