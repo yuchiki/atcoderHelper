@@ -51,12 +51,22 @@ jobs:
         run: echo "::add-matcher::.github/problem-matcher.json"
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
-  yamllint:
-    name: yamllint
-    runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
-    steps:
-      - uses: actions/checkout@v2
-      - name: enable problem matcher
-        run: echo "::add-matcher::.github/problem-matcher.json"
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3
+  notification:
+    name: notification
+    if: always()
+#    if: always() && github.event.event_name == 'push'
+    needs:
+      - build
+      - test
+      - lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v1
+      - name: notify to discord
+        uses: sarisia/actions-status-discord@v1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          status: ${{ env.WORKFLOW_CONCLUSION }}
