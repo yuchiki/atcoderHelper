@@ -3,7 +3,7 @@ default-strategy-and-os: &default-strategy-and-os
   strategy:
     matrix:
       os: [ubuntu-latest, macos-latest]
-  run-on: {{matrix.os}}
+  run-on: ${{matrix.os}}
 name: golang-ci
 on:
   push:
