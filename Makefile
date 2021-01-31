@@ -21,6 +21,5 @@ lint:
 yamllint:
 	yamllint .
 
-
 clean:
 	rm -rf bin
