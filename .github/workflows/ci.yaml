@@ -24,7 +24,7 @@ jobs:
         with:
           go-version: ${{matrix.go-version}}
       - name: build
-        run:  go build ./...
+        run: go build ./...
   test:
     name: test
     strategy:
@@ -41,7 +41,7 @@ jobs:
         with:
           go-version: ${{matrix.go-version}}
       - name: test
-        run:  go test ./...
+        run: go test ./...
   lint:
     name: lint
     runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
