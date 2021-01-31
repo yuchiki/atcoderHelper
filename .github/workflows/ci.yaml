@@ -56,7 +56,7 @@ jobs:
   notification:
     name: notification
     if: always()
-#    if: always() && github.event.event_name == 'push'
+    #    if: always() && github.event.event_name == 'push'
     needs:
       - build
       - test
@@ -67,8 +67,13 @@ jobs:
       - name: create send message
         id: create-send-message
         env:
-          WORKFLOW_STATUS: ${{} env.WORKFLOW_CONCLUSION }}
-        run: `echo "::set-output name=message::$(if [ ${WORKFLOW_STATUS} != success ]; then echo "@yuchiki"; fi)"
+          WORKFLOW_STATUS: ${{ env.WORKFLOW_CONCLUSION }}
+        run: |
+          if [ ${WORKFLOW_CONCLUSION} != success ]; then
+            echo "::set-output name=message::@yuchiki"
+          else
+            echo "::set-output name=message::"
+          fi
       - name: notify to discord
         uses: sarisia/actions-status-discord@v1
         env:
