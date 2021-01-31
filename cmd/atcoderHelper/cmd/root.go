@@ -23,7 +23,6 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.AddCommand(versionCmd)
 }
 
 func initConfig() {
