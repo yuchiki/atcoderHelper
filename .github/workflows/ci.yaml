@@ -1,6 +1,6 @@
 ---
 name: golang-ci
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     tags:
       - v+
@@ -38,14 +38,14 @@ jobs:
           args: go test ./...
   lint:
     name: lint
-    runs-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
+    runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
       - uses: actions/checkout@v2
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
   yamllint:
     name: yamllint
-    runs-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
+    runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
       - uses: actions/checkout@v2
       - name: yamllint
