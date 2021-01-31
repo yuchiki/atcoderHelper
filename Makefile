@@ -5,13 +5,21 @@ LD_FLAGS += -X '$(VERSION_PATH).edited=$(shell if git diff HEAD --exit-code > /d
 LD_FLAGS += -X '$(VERSION_PATH).date=$(shell date '+%Y/%m/%d %H:%M:%S %Z')'
 FLAGS := -ldflags "$(LD_FLAGS)"
 
-.PHONY: ach test clean
+.PHONY: ach test lint yamllint clean
 
-ach:
+all: yamllint lint ach test
+
+ach: test
 	go build ${FLAGS} -o ./bin/ach ./cmd/atcoderHelper/main.go
 
 test:
 	go test ./...
+
+lint:
+	golangci-lint run
+
+yamllint:
+	yamllint .
 
 clean:
 	rm -rf bin

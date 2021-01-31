@@ -1,0 +1,62 @@
+---
+name: golang-ci
+on:  # yamllint disable-line rule:truthy
+  push:
+    tags:
+      - v+
+    branches:
+      - master
+  pull_request:
+jobs:
+  build:
+    name: build
+    strategy:
+      matrix:
+        go-version: ["1.14"]  # release時には 1.10 ~ 1.15 で確かめる
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/problem-matcher.json"
+      - name: setup go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{matrix.go-version}}
+      - name: build
+        run: go build ./...
+  test:
+    name: test
+    strategy:
+      matrix:
+        go-version: ["1.14"]  # release時には 1.10~1.15で確かめる
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/problem-matcher.json"
+      - name: setup go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{matrix.go-version}}
+      - name: test
+        run: go test ./...
+  lint:
+    name: lint
+    runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
+    steps:
+      - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/problem-matcher.json"
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+  yamllint:
+    name: yamllint
+    runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
+    steps:
+      - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/problem-matcher.json"
+      - name: yamllint
+        uses: ibiqlik/action-yamllint@v3
