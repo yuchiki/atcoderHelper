@@ -70,7 +70,7 @@ jobs:
           WORKFLOW_STATUS: ${{ env.WORKFLOW_CONCLUSION }}
         run: |
           if [ ${WORKFLOW_CONCLUSION} != success ]; then
-            echo "::set-output name=message::@yuchiki"
+            echo "::set-output name=message::<@517292970244833285>"
           fi
       - name: notify to discord
         uses: sarisia/actions-status-discord@v1
