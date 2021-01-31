@@ -5,7 +5,7 @@ on:  # yamllint disable-line rule:truthy
     types:
       - ci-passed
 jobs:
-release:
+  release:
     name: release
     runs-on: ubuntu-latest
     if: ${{ startsWith(gighub.event.client_payload.ref, 'refs/tags/')
