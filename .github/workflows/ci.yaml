@@ -97,4 +97,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           status: ${{ env.WORKFLOW_CONCLUSION }}
-          description: CI ${{ steps.create-send-message.outputs.message }}
+          description: ${{ steps.create-send-message.outputs.message }}

@@ -13,6 +13,10 @@ builds:
     goarch:
       - amd64
       - arm64
+    env:
+      - CGO_ENABLED=0
 archives:
   -
     format: zip
+release:
+  prerelease: auto
