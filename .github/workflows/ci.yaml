@@ -68,9 +68,10 @@ jobs:
         id: create-send-message
         env:
           WORKFLOW_STATUS: ${{ env.WORKFLOW_CONCLUSION }}
+          DISCORD_YUCHIKI_ID:  ${{ secrets.DISCORD_YUCHIKI_ID }}
         run: |
           if [ ${WORKFLOW_CONCLUSION} != success ]; then
-            echo "::set-output name=message::<@517292970244833285>"
+            echo "::set-output name=message::<@${{DISCORD_YUCHIKI_ID}}>"
           fi
       - name: notify to discord
         uses: sarisia/actions-status-discord@v1
