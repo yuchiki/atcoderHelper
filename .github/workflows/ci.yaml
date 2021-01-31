@@ -55,30 +55,35 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
   after-ci:
     name: after-ci
-    if: always()
-    #    if: always() && github.event.event_name == 'push'
     needs:
       - build
       - test
       - lint
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/workflow-conclusion-action@v1
       - name: set version
         id: set-version
         run: |
           VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
           echo ::set-output name=version::$VERSION
       - name: Trigger next workflow
-        if: ${{env.WORKFLOW_CONCLUSION}} == success
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.REPO_GHA_PAT }}
+          token: ${{ secrets.REPO_TOKEN }}
           repository: ${{ github.repository }}
           event-type: ci-passed
           client-payload: >-
             {"ref": "${{ github.ref }}",
             "sha": "${{ github.sha }}"}
+  notification:
+    name: notification
+    if: always()
+    #    if: always() && github.event.event_name == 'push'
+    needs:
+      - after-ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v1
       - name: set send message
         id: create-send-message
         run: |
@@ -92,4 +97,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           status: ${{ env.WORKFLOW_CONCLUSION }}
-          description: ${{ steps.create-send-message.outputs.message }}
+          description: CI ${{ steps.create-send-message.outputs.message }}
