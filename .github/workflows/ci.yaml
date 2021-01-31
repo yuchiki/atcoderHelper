@@ -1,9 +1,6 @@
 ---
 default-strategy-and-os: &default-strategy-and-os
-  strategy:
-    matrix:
-      os: [ubuntu-latest, macos-latest]
-  runs-on: ${{matrix.os}}
+
 name: golang-ci
 on:
   push:
@@ -15,7 +12,10 @@ on:
 jobs:
   build:
     name: build
-    <<: *default-strategy-and-os
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - name: enable problem matcher
@@ -26,7 +26,10 @@ jobs:
           args: go build ./...
   test:
     name: test
-    <<: *default-strategy-and-os
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - name: enable problem matcher
@@ -37,7 +40,10 @@ jobs:
           args: go test ./...
   lint:
     name: lint
-    <<: *default-strategy-and-os
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - name: golangci-lint
