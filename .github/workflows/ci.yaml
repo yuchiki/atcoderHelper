@@ -55,7 +55,7 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
   notification:
     name: notification
-    if: always()
+    if: always() #"ho"
 #    if: always() && github.event.event_name == 'push'
     needs:
       - build
