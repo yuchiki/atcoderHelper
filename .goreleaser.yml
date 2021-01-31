@@ -1,3 +1,4 @@
+---
 builds:
   - main: ./cmd/atcoderHelper/main.go
     binary: ach

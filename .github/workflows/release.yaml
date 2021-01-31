@@ -1,6 +1,6 @@
 ---
 name: release
-on:
+on:  # yamllint disable-line rule:truthy
   repository_dispatch:
     types:
       - ci-passed
