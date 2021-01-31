@@ -1,6 +1,4 @@
 ---
-default-strategy-and-os: &default-strategy-and-os
-
 name: golang-ci
 on:
   push:
