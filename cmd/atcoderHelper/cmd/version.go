@@ -38,6 +38,7 @@ func newVersionCmd() *cobra.Command {
 				return err
 			}
 			cmd.Println(string(bytes))
+
 			return nil
 		},
 	}

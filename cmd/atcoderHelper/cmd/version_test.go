@@ -3,6 +3,8 @@ package cmd
 import (
 	"bytes"
 	"errors"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -11,16 +13,24 @@ import (
 
 func TestVersion_Execute(t *testing.T) {
 	cmd := newVersionCmd()
+	jsonFieldsString := []string{
+		`"Version":"given by LDFLAGS"`,
+		`"Commits":"given by LDFLAGS"`,
+		`"Edited":"given by LDFLAGS"`,
+		`"Date":"given by LDFLAGS"`,
+	}
 	checkCommand(
 		t,
 		cmd,
-		outputShouldBe(`{"Version":"given by LDFLAGS","Commit":"given by LDFLAGS","Edited":"given by LDFLAGS","Date":"given by LDFLAGS"}`+"\n"),
+		outputShouldBe(fmt.Sprintf("{%s}\n", strings.Join(jsonFieldsString, ","))),
 		shouldNotHaveError(),
 	)
 }
 
-type OutputCheck func(t *testing.T, output string)
-type ErrorCheck func(t *testing.T, err error)
+type (
+	OutputCheck func(t *testing.T, output string)
+	ErrorCheck  func(t *testing.T, err error)
+)
 
 func outputShouldBe(expected string) OutputCheck {
 	return func(t *testing.T, output string) {
@@ -51,7 +61,9 @@ func shouldNotHaveError() ErrorCheck {
 
 func checkCommand(t *testing.T, command *cobra.Command, outputCheck OutputCheck, errorCheck ErrorCheck) {
 	t.Helper()
+
 	var buf bytes.Buffer
+
 	command.SetOut(&buf)
 	err := command.Execute()
 	errorCheck(t, err)
