@@ -12,35 +12,42 @@ jobs:
     name: build
     strategy:
       matrix:
+        go-version: ["1.13", "1.14", "1.15"]
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - name: enable problem matcher
-        run: echo "::add-matcher::.github/go-test-problem-matcher.json"
-      - name: test
-        uses: cedrickring/golang-action/go1.14@1.6.0
+        run: echo "::add-matcher::.github/problem-matcher.json"
+      - name: setup go
+        uses: actions/setup-gp@v1
         with:
-          args: go build ./...
-  test:
+          go-version: ${{matix.go}}
+      - name: build
+        run:  go build ./...
     name: test
     strategy:
       matrix:
+        go-version: ["1.13", "1.14", "1.15"]
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v2
       - name: enable problem matcher
-        run: echo "::add-matcher::.github/go-test-problem-matcher.json"
-      - name: test
-        uses: cedrickring/golang-action/go1.14@1.6.0
+        run: echo "::add-matcher::.github/problem-matcher.json"
+      - name: setup go
+        uses: actions/setup-gp@v1
         with:
-          args: go test ./...
+          go-version: ${{matix.go}}
+      - name: test
+        run:  go test ./...
   lint:
     name: lint
     runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
       - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/problem-matcher.json"
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
   yamllint:
@@ -48,5 +55,7 @@ jobs:
     runs-on: ubuntu-latest  # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
       - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/problem-matcher.json"
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3

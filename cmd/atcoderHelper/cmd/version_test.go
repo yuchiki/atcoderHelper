@@ -15,7 +15,7 @@ func TestVersion_Execute(t *testing.T) {
 	cmd := newVersionCmd()
 	jsonFieldsString := []string{
 		`"Version":"given by LDFLAGS"`,
-		`"Commits":"given by LDFLAGS"`,
+		`"Commit":"given by LDFLAGS"`,
 		`"Edited":"given by LDFLAGS"`,
 		`"Date":"given by LDFLAGS"`,
 	}
@@ -35,15 +35,18 @@ type (
 func outputShouldBe(expected string) OutputCheck {
 	return func(t *testing.T, output string) {
 		t.Helper()
+
 		if diff := cmp.Diff(output, expected); diff != "" {
 			t.Error(diff)
 		}
 	}
 }
 
+// nolint:deadcode,unused // 後々必ず使うはず
 func errorShouldBe(expected error) ErrorCheck {
 	return func(t *testing.T, err error) {
 		t.Helper()
+
 		if !errors.Is(expected, err) {
 			t.Errorf("expected error %v, but actual error %v", expected, err)
 		}
@@ -53,6 +56,7 @@ func errorShouldBe(expected error) ErrorCheck {
 func shouldNotHaveError() ErrorCheck {
 	return func(t *testing.T, err error) {
 		t.Helper()
+
 		if err != nil {
 			t.Error(err)
 		}
