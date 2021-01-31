@@ -5,17 +5,19 @@ LD_FLAGS += -X '$(VERSION_PATH).edited=$(shell if git diff HEAD --exit-code > /d
 LD_FLAGS += -X '$(VERSION_PATH).date=$(shell date '+%Y/%m/%d %H:%M:%S %Z')'
 FLAGS := -ldflags "$(LD_FLAGS)"
 
-.PHONY: ach test vet clean
+.PHONY: ach test lint
 
-ach:
+all: test lint ach
+
+ach: test lint
 	go build ${FLAGS} -o ./bin/ach ./cmd/atcoderHelper/main.go
 
 # go vet は保守的なcheckをするので、厳しすぎるかもしれない。問題があるようなら、suggestionだけして、CIの成否には関与しないように変更する。
 test:
 	go test ./...
-	golint ./...
-	goimports -w .
-	go vet ./...
+
+lint:
+	golangci-lint run
 
 
 clean:

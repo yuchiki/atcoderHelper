@@ -1,9 +1,9 @@
+---
 default-strategy-and-os: &default-strategy-and-os
   strategy:
     matrix:
-      os: [ ubuntu-latest, macos-latest]
+      os: [ubuntu-latest, macos-latest]
   run-on: {{matrix.os}}
-
 name: golang-ci
 on:
   push:
@@ -17,24 +17,24 @@ jobs:
     name: build
     <<: +default-strategy-and-os
     steps:
-    - uses: actions/checkout@v2
-    - name: enable problem matcher
-      run: echo "::add-matcher::.github/go-test-problem-matcher.json"
-    - name: test
-      uses: cedrickring/golang-action/go1.14@1.6.0
-      with:
-        args: go build ./...
+      - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/go-test-problem-matcher.json"
+      - name: test
+        uses: cedrickring/golang-action/go1.14@1.6.0
+        with:
+          args: go build ./...
   test:
     name: test
     <<: *default-strategy-and-os
     steps:
-    - uses: actions/checkout@v2
-    - name: enable problem matcher
-      run: echo "::add-matcher::.github/go-test-problem-matcher.json"
-    - name: test
-      uses: cedrickring/golang-action/go1.14@1.6.0
-      with:
-        args: go test ./...
+      - uses: actions/checkout@v2
+      - name: enable problem matcher
+        run: echo "::add-matcher::.github/go-test-problem-matcher.json"
+      - name: test
+        uses: cedrickring/golang-action/go1.14@1.6.0
+        with:
+          args: go test ./...
   lint:
     name: lint
     <<: *default-strategy-and-os
