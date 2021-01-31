@@ -45,7 +45,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
   yamllint:
     name: yamllint
-    run-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
+    runs-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
       - uses: actions/checkout@v2
       - name: yamllint
