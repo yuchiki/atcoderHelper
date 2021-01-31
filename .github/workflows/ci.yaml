@@ -38,11 +38,14 @@ jobs:
           args: go test ./...
   lint:
     name: lint
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{matrix.os}}
+    runs-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
     steps:
       - uses: actions/checkout@v2
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
+  yamllint:
+    name: yamllint
+    run-on: ubuntu-latest # lintはコードの問題なので、意図的に1環境でしかテストしない
+    steps:
+      - actions/checkout@v2
+      - uses: ibiqlik/action-yamllint@v3
