@@ -51,6 +51,17 @@ jobs:
         uses: golangci/golangci-lint-action@v2
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3
+  docs-generetaed:
+    name: docs generetaed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup go
+        uses: actions/setup-go@v1
+      - name: generate documents
+        run: make generate-docs
+      - name: no diff
+        run: git diff --exit-code
   notification:
     name: notification
     if: always()
@@ -59,6 +70,7 @@ jobs:
       - build
       - test
       - lint
+      - docs-generated
     runs-on: ubuntu-latest
     steps:
       - uses: technote-space/workflow-conclusion-action@v1

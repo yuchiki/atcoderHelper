@@ -18,7 +18,7 @@ ach:
 gendocs:
 	go build -o ./bin/gendocs ./cmd/gendocs/main.go
 
-generate-docs:
+generate-docs: gendocs
 
 dry-release:
 	goreleaser --snapshot --skip-publish --rm-dist
