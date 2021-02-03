@@ -53,6 +53,7 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
       - name: setup go
         uses: actions/setup-go@v1
+      - name: go mod tidy
         run: go mod tidy
       - name: no diff
         run: git diff --exit-code
