@@ -1,6 +1,9 @@
 # Description
 
-Fix #
+What the title says.
+
+Close #
+
 Associated #
 
 ## Type of Change
