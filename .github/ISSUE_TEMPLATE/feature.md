@@ -1,6 +1,6 @@
 ---
-name: report issue
-about: for reporting bugs
+name: new feature
+about: for propossing a feature
 title: "[FEATURE] "
 labels: feature
 assignees: ''
@@ -12,6 +12,7 @@ assignees: ''
 - [ ] Add a new subcommand
 - [ ] Add a new feature to an existing command
 - [ ] Others
+- [ ] None of them
 
 # Description
 

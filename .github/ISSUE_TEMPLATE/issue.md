@@ -1,8 +1,8 @@
 ---
 name: report issue
-about: for reporting bugs
+about: for reporting an issue
 title: "[ISSUE] "
-labels: ''
+labels: issue
 assignees: ''
 
 ---
