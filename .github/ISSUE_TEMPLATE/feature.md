@@ -12,6 +12,7 @@ assignees: ''
 - [ ] Add a new subcommand
 - [ ] Add a new feature to an existing command
 - [ ] Others
+- [ ] None of them
 
 # Description
 
