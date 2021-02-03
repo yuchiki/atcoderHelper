@@ -1,4 +1,4 @@
-package cmd
+package ach
 
 import (
 	"encoding/json"
@@ -42,8 +42,4 @@ func newVersionCmd() *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	rootCmd.AddCommand(newVersionCmd())
 }
