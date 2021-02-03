@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: ${{matrix.go-version}}
       - name: build
-        run: go build ./...
+        run: make build
   test:
     name: test
     strategy:
@@ -51,12 +51,13 @@ jobs:
         uses: golangci/golangci-lint-action@v2
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3
-      - name: go mod tidy
+      - name: setup go
+        uses: actions/setup-go@v1
         run: go mod tidy
       - name: no diff
         run: git diff --exit-code
   docs:
-    name: docs generetaed
+    name: docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
