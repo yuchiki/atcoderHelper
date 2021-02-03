@@ -2,8 +2,11 @@
 name: report issue
 about: for reporting bugs
 title: "[ISSUE] "
-labels: issue
+labels: ''
+assignees: ''
+
 ---
+
 ## Expected Behavior
 
 

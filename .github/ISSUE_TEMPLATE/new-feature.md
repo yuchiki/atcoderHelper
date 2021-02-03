@@ -1,9 +1,9 @@
 ---
-name: report issue
+name: new feature
 about: for reporting bugs
 title: "[FEATURE] "
-labels: feature
-assignees: ''
+labels: ''
+assignees: yuchiki
 
 ---
 
