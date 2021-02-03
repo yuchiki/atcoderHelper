@@ -5,15 +5,24 @@ LD_FLAGS += -X '$(VERSION_PATH).edited=$(shell if git diff HEAD --exit-code > /d
 LD_FLAGS += -X '$(VERSION_PATH).date=$(shell date '+%Y/%m/%d %H:%M:%S %Z')'
 FLAGS := -ldflags "$(LD_FLAGS)"
 
-.PHONY: clean ach test lint yamllint dry-release
+.PHONY: clean build ach test lint yamllint generate-docs dry-release
 
-all: yamllint lint ach test dry-release
+all: build test yamllint lint generate-docs dry-release
+
+build: ach gendocs
+
+
+ach:
+	go build ${FLAGS} -o ./bin/ach ./cmd/atcoderHelper/main.go
+
+gendocs:
+	go build -o ./bin/gendocs ./cmd/gendocs/main.go
+
+generate-docs:
 
 dry-release:
 	goreleaser --snapshot --skip-publish --rm-dist
 
-ach: test
-	go build ${FLAGS} -o ./bin/ach ./cmd/atcoderHelper/main.go
 
 test:
 	go test ./...
