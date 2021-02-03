@@ -13,8 +13,6 @@ Associated #
 - [ ] Improve CI/CD
 - [ ] Docs Modification
 
-# Associated Issues
-
 # How This has been Tested
 
 - [x] passed the CI lint.
