@@ -1,8 +1,8 @@
 ---
-name: report issue
-about: for reporting an issue
-title: "[ISSUE] "
-labels: issue
+name: report problem
+about: for reporting a problem
+title: "[PROBLEM] "
+labels: problem
 assignees: ''
 
 ---

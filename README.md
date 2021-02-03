@@ -1,6 +1,4 @@
-# English document
-
-We do not have an English version document yet.
+We do not have an English document yet.
 
 # 概要
 
@@ -12,7 +10,7 @@ AtCoderのコンテストに出るとき、もしくは過去問を解く時の�
 
 # Install
 
-このrepositoryの[releaseのassets](https://github.com/yuchiki/atcoderHelper/releases) からbinaryをdownloadする。
+このrepositoryの[releaseのassets](https://github.com/yuchiki/atcoderHelper/releases)からbinaryをdownloadします。
 
 # 注意
 
