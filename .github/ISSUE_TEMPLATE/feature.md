@@ -1,6 +1,6 @@
 ---
-name: report issue
-about: for reporting bugs
+name: new feature
+about: for propossing a feature
 title: "[FEATURE] "
 labels: feature
 assignees: ''
