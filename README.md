@@ -4,7 +4,7 @@ We do not have an English version document yet.
 
 # 概要
 
-AtCoderコンテストに出るとき/過去問を解く時の提携作業を楽をするためのシンプルなCLIアプリです。
+AtCoderのコンテストに出るとき、もしくは過去問を解く時の提携作業を楽をするためのシンプルなCLIアプリです。
 
 # デモ
 
@@ -29,6 +29,6 @@ This application uses `$HOME/.ach` directory where a configuration file is place
 [ドキュメント](docs/cmd/ach.md) はこちらです。
 
 
-# 開発フロー・リリースフロー
+# 開発フロー・リリースフロー・コントリビューション
 
 [開発フロー](docs/ja/development_flow.md)を参照してください。
