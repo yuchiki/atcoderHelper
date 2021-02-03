@@ -1,6 +1,6 @@
 # English document
 
-We have not English version document yet.
+We do not have an English version document yet.
 
 # 概要
 
