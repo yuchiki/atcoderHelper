@@ -10,6 +10,8 @@ Associated #
 
 - [ ] Bug Fix
 - [ ] New Feature
+- [ ] Improve CI/CD
+- [ ] Docs Modification
 
 # Associated Issues
 
