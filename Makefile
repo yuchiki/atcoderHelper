@@ -29,6 +29,7 @@ test:
 
 lint:
 	golangci-lint run
+	go mod tidy
 
 yamllint:
 	yamllint .

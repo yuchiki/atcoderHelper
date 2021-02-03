@@ -51,6 +51,10 @@ jobs:
         uses: golangci/golangci-lint-action@v2
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3
+      - name: go mod tidy
+        run: go mod tidy
+      - name: no diff
+        run: git diff --exit-code
   docs:
     name: docs generetaed
     runs-on: ubuntu-latest
