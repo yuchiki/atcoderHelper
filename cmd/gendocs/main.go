@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/spf13/cobra/doc"
-	"github.com/yuchiki/atcoderHelper/cmd/atcoderHelper/ach"
+	"github.com/yuchiki/atcoderHelper/internal/cmd/ach"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/yuchiki/atcoderHelper/cmd/atcoderHelper/ach"
+	"github.com/yuchiki/atcoderHelper/internal/cmd/ach"
 )
 
 func main() {

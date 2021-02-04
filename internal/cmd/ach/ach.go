@@ -2,6 +2,7 @@ package ach
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/version"
 )
 
 func NewAchCmd() *cobra.Command {
@@ -17,7 +18,7 @@ func NewAchCmd() *cobra.Command {
 }
 
 func registerSubcommands(cmd *cobra.Command) {
-	cmd.AddCommand(newVersionCmd())
+	cmd.AddCommand(version.NewVersionCmd())
 }
 
 /*
