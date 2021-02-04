@@ -1,4 +1,4 @@
-package ach
+package version
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ var (
 	date    = "given by LDFLAGS"
 )
 
-func newVersionCmd() *cobra.Command {
+func NewVersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "show version",

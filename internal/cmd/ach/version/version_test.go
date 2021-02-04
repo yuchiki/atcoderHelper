@@ -1,4 +1,4 @@
-package ach
+package version
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 )
 
 func TestVersion_Execute(t *testing.T) {
-	cmd := newVersionCmd()
+	cmd := NewVersionCmd()
 	jsonFieldsString := []string{
 		`"Version":"given by LDFLAGS"`,
 		`"Commit":"given by LDFLAGS"`,
