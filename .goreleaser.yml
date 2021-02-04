@@ -3,12 +3,12 @@ builds:
   - main: ./cmd/atcoderHelper/main.go
     binary: ach
     ldflags:
-      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.version=\
+      - "-X github.com.yuchiki.atcoderHelper/internal/cmd/ach.version=\
         {{.Version}}"
-      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.commit=\
+      - "-X github.com.yuchiki.atcoderHelper/internal/cmd/ach.commit=\
         {{.Commit}}"
-      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.edited=''"
-      - "-X github.com.yuchiki.atcoderHelper/cmd/atcoderHelper/cmd.date=\
+      - "-X github.com.yuchiki.atcoderHelper/internal/cmd/ach.edited=''"
+      - "-X github.com.yuchiki.atcoderHelper/internal/cmd/ach.date=\
         {{.Date}}"
     goarch:
       - amd64

@@ -1,4 +1,4 @@
-VERSION_PATH := github.com/yuchiki/atcoderHelper/cmd/atcoderHelper/cmd
+VERSION_PATH := github.com/yuchiki/atcoderHelper/internal/cmd/ach/version
 LD_FLAGS := -X '$(VERSION_PATH).version=manual-build'
 LD_FLAGS += -X '$(VERSION_PATH).commit=$(shell git rev-parse HEAD)'
 LD_FLAGS += -X '$(VERSION_PATH).edited=$(shell if git diff HEAD --exit-code > /dev/null; then echo "HEAD"; else echo "edited"; fi)'
