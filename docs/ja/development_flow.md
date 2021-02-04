@@ -20,6 +20,11 @@
 1. [ここ](https://github.com/yuchiki/atcoderHelper/releases/new)からrelease tagを切る
 2. 実行ファイルが自動でmacとubuntu用にzipされ、uploadされる
 
-## Todoリスト
+## design
 
-[To do](../working/todos.md)
+(最終的にはissueに移動して整理したい)
+[design](../working/design.md)
+
+## milestones
+
+[milestones](../working/milestones.md)
