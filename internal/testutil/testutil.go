@@ -65,7 +65,9 @@ func ErrorShouldBe(expected error) ErrorCheck {
 
 // DoesNotCareOutput returns a check which allows everything.
 func DoesNotCareOutput() OutputCheck {
-	return func(_ *testing.T, _ string) {}
+	return func(t *testing.T, _ string) {
+		t.Helper()
+	}
 }
 
 // ShouldNotHaveError returns a check which expects no errors.
@@ -80,7 +82,12 @@ func ShouldNotHaveError() ErrorCheck {
 }
 
 // CheckCommand checks if the command behaves expectedly.
-func CheckCommand(t *testing.T, command *cobra.Command, outputCheck OutputCheck, errorCheck ErrorCheck, args ...string) {
+func CheckCommand(
+	t *testing.T,
+	command *cobra.Command,
+	outputCheck OutputCheck,
+	errorCheck ErrorCheck,
+	args ...string) {
 	t.Helper()
 
 	var buf bytes.Buffer
@@ -147,6 +154,7 @@ func (cts TestCaseTemplates) Build(cmdBuilder func() *cobra.Command) TestCases {
 	for _, ct := range ([]TestCaseTemplate)(cts) {
 		testCases = append(testCases, ct.Build(cmdBuilder))
 	}
+
 	return TestCases(testCases)
 }
 
