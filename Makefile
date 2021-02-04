@@ -7,7 +7,7 @@ FLAGS := -ldflags "$(LD_FLAGS)"
 
 .PHONY: clean build ach test lint yamllint generate-docs dry-release
 
-default: build test lint yamlllint generate-docs
+default: build test lint yamllint generate-docs
 
 all: build test yamllint lint generate-docs dry-release
 
