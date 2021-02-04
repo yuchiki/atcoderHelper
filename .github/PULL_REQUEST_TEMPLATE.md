@@ -12,6 +12,7 @@ Associated #
 - [ ] New Feature
 - [ ] Improve CI/CD
 - [ ] Docs Modification
+- [ ] Refactoring
 
 # How This has been Tested
 
