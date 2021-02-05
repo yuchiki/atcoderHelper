@@ -5,6 +5,9 @@ creates contest directory
 ### Synopsis
 
 creates contest directory.
+Temporally, current template directory is hard-coded as $HOME/projects/private/atcoder/D
+D is for directory.
+		
 
 ```
 ach contest create [contestName] [flags]
@@ -13,7 +16,7 @@ ach contest create [contestName] [flags]
 ### Options
 
 ```
-  -d, --default-template   use default contest template
+  -d, --default-template   (required) use default contest template
   -h, --help               help for create
 ```
 
