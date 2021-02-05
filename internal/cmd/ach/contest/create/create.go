@@ -1,6 +1,7 @@
 package create
 
 import (
+	"fmt"
 	"log"
 	"os/exec"
 	"os/user"
@@ -34,10 +35,28 @@ D is for directory.
 
 			for _, taskName := range taskNames {
 				taskDirName := path.Join(contestName, taskName)
-
 				err := exec.Command("cp", "-r", templateDirName, taskDirName).Run()
 				if err != nil {
 					return err
+				}
+
+				sampleDirName := path.Join(taskDirName, "sampleCases")
+				err = exec.Command("mkdir", sampleDirName).Run()
+				if err != nil {
+					return err
+				}
+
+				for i := 1; i <= 5; i++ {
+					inputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.input", i))
+					err = exec.Command("touch", inputFileName).Run()
+					if err != nil {
+						return err
+					}
+					outputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.output", i))
+					err = exec.Command("touch", outputFileName).Run()
+					if err != nil {
+						return err
+					}
 				}
 			}
 
