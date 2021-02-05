@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -39,6 +40,12 @@ type (
 
 	// TestCaseTemplates is a suit of testCaseTemplates.
 	TestCaseTemplates []TestCaseTemplate
+
+	// HelpInfo contains information obtained from help message.
+	HelpInfo struct {
+		CommandName string
+		Subcommands []string
+	}
 )
 
 // OutputShouldBe returns a check for output.
@@ -48,6 +55,34 @@ func OutputShouldBe(expected string) OutputCheck {
 
 		if diff := cmp.Diff(output, expected); diff != "" {
 			t.Error(diff)
+		}
+	}
+}
+
+// HelpShouldShowCommandName returns a check for command name.
+func HelpShouldShowCommandName(name string) OutputCheck {
+	return func(t *testing.T, output string) {
+		t.Helper()
+
+		help := ParseHelp(t, output)
+
+		if help.CommandName != name {
+			t.Errorf("expected %v, but actual %v", name, help.CommandName)
+		}
+	}
+}
+
+// HelpShouldShowSubcommands returns a check for subcommands.
+func HelpShouldShowSubcommands(subcommands []string) OutputCheck {
+	return func(t *testing.T, output string) {
+		t.Helper()
+
+		help := ParseHelp(t, output)
+
+		for _, subcommand := range subcommands {
+			if !Contains(subcommand, help.Subcommands) {
+				t.Errorf("subcommand %v is not included in %v", subcommand, help.Subcommands)
+			}
 		}
 	}
 }
@@ -158,17 +193,81 @@ func (cts TestCaseTemplates) Build(cmdBuilder func() *cobra.Command) TestCases {
 	return TestCases(testCases)
 }
 
-// RootSucceeds returns a template which tests if the root succeeds.
-func RootSucceeds() TestCaseTemplate {
+// HasName returns a template which tests if the root -h succeeds and shows the name.
+func HasName(name string) TestCaseTemplate {
 	return TestCaseTemplate{
-		Name: "root succeeds",
+		Name:        fmt.Sprintf("root has Name %s", name),
+		Args:        []string{"-h"},
+		OutputCheck: HelpShouldShowCommandName(name),
 	}
 }
 
-// HasSubcommand returns a template which tests if it has the subcommand and it succeeds.
-func HasSubcommand(name string) TestCaseTemplate {
+// HasSubcommands returns a template which tests if it has the subcommand and it succeeds.
+func HasSubcommands(subcommands ...string) TestCaseTemplate {
 	return TestCaseTemplate{
-		Name: fmt.Sprintf("has Subcommand %s and it succeeds", name),
-		Args: []string{name},
+		Name:        fmt.Sprintf("has Subcommands %s and it succeeds", subcommands),
+		Args:        []string{"-h"},
+		OutputCheck: HelpShouldShowSubcommands(subcommands),
 	}
+}
+
+// ParseHelp parses a help message.
+func ParseHelp(t *testing.T, helpMessage string) HelpInfo {
+	t.Helper()
+
+	lines := strings.Split(helpMessage, "\n")
+
+	literal := map[string][]string{}
+
+	i := 0
+	for i < len(lines) {
+		if lines[i] == "" {
+			i++
+
+			continue
+		}
+
+		if !strings.HasSuffix(lines[i], ":") {
+			i++
+
+			continue
+		}
+
+		key := strings.TrimSuffix(lines[i], ":")
+		i++
+
+		for j := i; j < len(lines); j++ {
+			if !strings.HasPrefix(lines[j], "  ") {
+				break
+			}
+
+			literal[key] = append(literal[key], strings.TrimSpace(lines[j]))
+		}
+	}
+
+	if len(literal["Usage"]) == 0 {
+		t.Fatal("help message has no Usage section")
+	}
+
+	cmdName := strings.Fields(literal["Usage"][0])[0]
+
+	subcommands := []string{}
+	for _, cmdDescriptions := range literal["Available Commands"] {
+		subcommands = append(subcommands, strings.Fields(cmdDescriptions)[0])
+	}
+
+	return HelpInfo{
+		CommandName: cmdName,
+		Subcommands: subcommands,
+	}
+}
+
+func Contains(str string, arr []string) bool {
+	for _, elem := range arr {
+		if str == elem {
+			return true
+		}
+	}
+
+	return false
 }

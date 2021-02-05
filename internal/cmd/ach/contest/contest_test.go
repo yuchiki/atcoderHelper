@@ -1,4 +1,4 @@
-package ach
+package contest
 
 import (
 	"testing"
@@ -8,9 +8,9 @@ import (
 
 func TestAch_Execute(t *testing.T) {
 	testutil.TestCaseTemplates{
-		testutil.HasName("ach"),
-		testutil.HasSubcommands("version", "contest"),
+		testutil.HasName("contest"),
+		testutil.HasSubcommands("create"),
 	}.
-		Build(NewAchCmd).
+		Build(NewContestCmd).
 		Run(t)
 }
