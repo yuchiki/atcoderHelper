@@ -1,6 +1,7 @@
 package create
 
 import (
+	"log"
 	"os/exec"
 	"os/user"
 	"path"
@@ -8,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// NewContestCreateCmd returns a new contest create command.
 func NewContestCreateCmd() *cobra.Command {
 	user, _ := user.Current()
 	templateDirName := path.Join(user.HomeDir, "projects", "private", "atcoder", "D")
@@ -16,16 +18,24 @@ func NewContestCreateCmd() *cobra.Command {
 	useDefaultTemplate := new(bool)
 
 	cmd := &cobra.Command{
-		Use:   "create",
-		Short: "show version",
-		Long:  "show version.",
+		Use:   "create [contestName]",
+		Short: "creates contest directory",
+		Long:  "creates contest directory.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			contestName := args[0]
-			exec.Command("mkdir", contestName).Run()
+			err := exec.Command("mkdir", contestName).Run()
+			if err != nil {
+				return err
+			}
+
 			for _, taskName := range taskNames {
 				taskDirName := path.Join(contestName, taskName)
-				exec.Command("cp", "-r", templateDirName, taskDirName).Run()
+
+				err := exec.Command("cp", "-r", templateDirName, taskDirName).Run()
+				if err != nil {
+					return err
+				}
 			}
 
 			return nil
@@ -33,7 +43,10 @@ func NewContestCreateCmd() *cobra.Command {
 	}
 
 	cmd.Flags().BoolVarP(useDefaultTemplate, "default-template", "d", false, "use default contest template")
-	cmd.MarkFlagRequired("default-template")
+
+	if cmd.MarkFlagRequired("default-template") != nil {
+		log.Fatal("default-template require")
+	}
 
 	return cmd
 }
