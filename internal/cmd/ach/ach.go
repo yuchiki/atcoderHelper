@@ -6,11 +6,12 @@ import (
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/version"
 )
 
+// NewAchCmd returns ach command.
 func NewAchCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ach",
-		Short: "ach は Atcoder出場に際する定形作業を自動化します",
-		Long:  `ach は Atcoder出場に際する定形作業を自動化します。`,
+		Short: "ach automates routine work you does when you participate AtCoder contests",
+		Long:  `ach automates routine work you does when you participate AtCoder contests. `,
 	}
 
 	registerSubcommands(cmd)
