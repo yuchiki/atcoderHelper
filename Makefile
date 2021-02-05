@@ -25,6 +25,7 @@ gendocs:
 	go build -o ./bin/gendocs ./cmd/gendocs/main.go
 
 generate-docs: gendocs
+	./bin/gendocs
 
 dry-release:
 	goreleaser --snapshot --skip-publish --rm-dist
