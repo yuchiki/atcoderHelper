@@ -7,15 +7,18 @@ FLAGS := -ldflags "$(LD_FLAGS)"
 
 .PHONY: install clean build ach test lint yamllint generate-docs dry-release
 
-default: build test lint yamllint generate-docs
+default: fmt build test lint yamllint generate-docs
 
-all: build test yamllint lint generate-docs dry-release
+all: fmt build test yamllint lint generate-docs dry-release
 
 install:
 	go install ./cmd/ach
 
 
 build: ach gendocs
+
+fmt:
+	gofumpt -w .
 
 
 ach:
