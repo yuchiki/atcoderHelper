@@ -24,8 +24,8 @@ var (
 func NewVersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
-		Short: "show version",
-		Long:  "show version.",
+		Short: "shows version",
+		Long:  "shows version.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			Build := Version{
 				Version: version,

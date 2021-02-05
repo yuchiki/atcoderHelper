@@ -20,8 +20,11 @@ func NewContestCreateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create [contestName]",
 		Short: "creates contest directory",
-		Long:  "creates contest directory.",
-		Args:  cobra.ExactArgs(1),
+		Long: `creates contest directory.
+Temporally, current template directory is hard-coded as $HOME/projects/private/atcoder/D
+D is for directory.
+		`,
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			contestName := args[0]
 			err := exec.Command("mkdir", contestName).Run()
@@ -42,7 +45,7 @@ func NewContestCreateCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVarP(useDefaultTemplate, "default-template", "d", false, "use default contest template")
+	cmd.Flags().BoolVarP(useDefaultTemplate, "default-template", "d", false, "(required) use default contest template")
 
 	if cmd.MarkFlagRequired("default-template") != nil {
 		log.Fatal("default-template require")
