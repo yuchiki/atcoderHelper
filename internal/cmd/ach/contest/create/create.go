@@ -48,11 +48,11 @@ D is for directory.
 
 				for i := 1; i <= 5; i++ {
 					inputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.input", i))
-					err = exec.Command("touch", inputFileName).Run()
+					err = exec.Command("bash", "-c", fmt.Sprintf(`echo "[skip ach test] > %s`, inputFileName)).Run()
 					if err != nil {
 						return err
 					}
-					outputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.output", i))
+					outputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.expected", i))
 					err = exec.Command("touch", outputFileName).Run()
 					if err != nil {
 						return err
