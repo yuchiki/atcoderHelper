@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: set timezone
-        uses: actions/set-timezone-action@v1.1
+        uses: szenius/set-timezone-action@v1.1
         with:
           timezoneLinux: "Asia/Tokyo"
       - name: setup go
