@@ -64,6 +64,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: set timezone
+        uses: actions/set-timezone-action@v1.1
+        with:
+          timezoneLinux: "Asia/Tokyo"
       - name: setup go
         uses: actions/setup-go@v1
         with:
