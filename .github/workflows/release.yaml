@@ -46,12 +46,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: setup go
       - name: set timezone
         uses: actions/set-timezone-action@v1.1
         with:
           timezoneLinux: "Asia/Tokyo"
-        uses: actions/setup-go@v1
+      -  name: setup go
+         uses: actions/setup-go@v1
         with:
           go-version: "1.14"
       - name: generate documents
