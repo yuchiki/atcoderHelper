@@ -40,19 +40,29 @@ func NewTestCmd(options ...Option) *cobra.Command {
 	return &cobra.Command{
 		Use:   "test",
 		Short: "tests sample cases",
-		Long:  "tests sample cases",
+		Long: `tests sample cases.
+
+The specification is not fixed. The below is the current temporal behaviour.
+
+
+- build.sh is run once/
+- when there exists case{n}.input for n in 1..N, tests are done for 1..N.
+- in each test,
+  - the command executes "cat case{n}.input | ./run.sh > case{n}.actual".
+  - Then, it compares case{n}.actual and case{n}.expected.
+  - If case{n}.input is "[skip ach test]\n", the case is skipped.
+`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("building...")
 			if out, err := exec.Command("bash", "-c", "./build.sh").Output(); err != nil {
 				fmt.Print(string(out))
-				return err
 
+				return err
 			}
 			fmt.Println("built.")
 
 			i := 1
-			successes := 0
-			cases := 0
+			successes, cases := 0, 0
 			for {
 				if _, err := os.Stat(testInputName(opts.SampleCasesDir, i)); err == nil {
 					result, err := testNthCase(opts.SampleCasesDir, i)
@@ -103,6 +113,7 @@ func testNthCase(sampleCasesDir string, n int) (bool, error) {
 
 	if string(inputBytes) == "[skip ach test]\n" {
 		cautionText("skip")
+
 		return true, nil
 	}
 
@@ -124,25 +135,29 @@ func testNthCase(sampleCasesDir string, n int) (bool, error) {
 
 	if string(actual) == string(expected) {
 		successText("pass")
+
 		return true, nil
-	} else {
-		errorText("fail")
-		if string(expected) == "" {
-			fmt.Printf("  expected: (empty)\n")
-		} else {
-			fmt.Printf("  expected: %s", string(expected))
-		}
-
-		if string(actual) == "" {
-			fmt.Printf("  actual  : (empty)\n")
-		} else {
-			fmt.Printf("  actual  : %s", string(actual))
-		}
-
-		return false, nil
 	}
+
+	errorText("fail")
+
+	if string(expected) == "" {
+		fmt.Printf("  expected: (empty)\n")
+	} else {
+		fmt.Printf("  expected: %s", string(expected))
+	}
+
+	if string(actual) == "" {
+		fmt.Printf("  actual  : (empty)\n")
+	} else {
+		fmt.Printf("  actual  : %s", string(actual))
+	}
+
+	return false, nil
 }
 
-var errorText = color.Red
-var cautionText = color.Yellow
-var successText = color.Green
+var (
+	errorText   = color.Red
+	cautionText = color.Yellow
+	successText = color.Green
+)
