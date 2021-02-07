@@ -35,21 +35,23 @@ D is for directory.
 
 			for _, taskName := range taskNames {
 				taskDirName := path.Join(contestName, taskName)
-				err := exec.Command("cp", "-r", templateDirName, taskDirName).Run()
-				if err != nil {
+				if output, err := exec.Command("cp", "-r", templateDirName, taskDirName).Output(); err != nil {
+					fmt.Print(output)
 					return err
 				}
 
 				sampleDirName := path.Join(taskDirName, "sampleCases")
-				err = exec.Command("mkdir", sampleDirName).Run()
-				if err != nil {
+				if output, err := exec.Command("mkdir", sampleDirName).Output(); err != nil {
+					fmt.Print(output)
 					return err
 				}
 
 				for i := 1; i <= 5; i++ {
 					inputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.input", i))
-					err = exec.Command("bash", "-c", fmt.Sprintf(`echo "[skip ach test] > %s`, inputFileName)).Run()
+					output, err := exec.Command("bash", "-c", fmt.Sprintf(`echo "[skip ach test]" > %s`, inputFileName)).Output()
 					if err != nil {
+						fmt.Printf("%s can not be initialized", inputFileName)
+						fmt.Print(output)
 						return err
 					}
 					outputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.expected", i))

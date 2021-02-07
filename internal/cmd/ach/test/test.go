@@ -6,34 +6,56 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
-const sampleCasesDir = "sampleCases"
+const defaultSampleCasesDir = "sampleCases"
+
+type opts struct {
+	SampleCasesDir string
+}
+
+// Option is a functional option for NewTestCmd.
+type Option func(*opts)
+
+// SetSampleCasesDir changes sampleCaseDir from the default.
+func SetSampleCasesDir(dirName string) Option {
+	return func(opts *opts) {
+		opts.SampleCasesDir = defaultSampleCasesDir
+	}
+}
 
 // NewTestCmd returns test command
-func NewTestCmd() *cobra.Command {
+func NewTestCmd(options ...Option) *cobra.Command {
+	opts := opts{
+		SampleCasesDir: "",
+	}
+
+	for _, option := range options {
+		option(&opts)
+	}
+
 	return &cobra.Command{
 		Use:   "test",
 		Short: "tests sample cases",
 		Long:  "tests sample cases",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println("building...")
-			if err := exec.Command("bash", "-c", "./build.sh").Run(); err != nil {
+			if out, err := exec.Command("bash", "-c", "./build.sh").Output(); err != nil {
+				fmt.Print(string(out))
 				return err
+
 			}
 			fmt.Println("built.")
 
 			i := 1
-
 			successes := 0
 			cases := 0
 			for {
-				if _, err := os.Stat(testInputName(i)); err == nil {
-					result, err := testNthCase(i)
+				if _, err := os.Stat(testInputName(opts.SampleCasesDir, i)); err == nil {
+					result, err := testNthCase(opts.SampleCasesDir, i)
 					cases++
 					if err != nil {
 						return err
@@ -59,43 +81,43 @@ func NewTestCmd() *cobra.Command {
 	}
 }
 
-func testInputName(n int) string {
+func testInputName(sampleCasesDir string, n int) string {
 	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.input", n))
 }
 
-func testExpectedName(n int) string {
+func testExpectedName(sampleCasesDir string, n int) string {
 	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.expected", n))
 }
 
-func testActualName(n int) string {
+func testActualName(sampleCasesDir string, n int) string {
 	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.actual", n))
 }
 
-func testNthCase(n int) (bool, error) {
+func testNthCase(sampleCasesDir string, n int) (bool, error) {
 	fmt.Printf("case %d: ", n)
 
-	inputBytes, err := ioutil.ReadFile(testInputName(n))
+	inputBytes, err := ioutil.ReadFile(testInputName(sampleCasesDir, n))
 	if err != nil {
 		return false, err
 	}
 
-	if strings.TrimRight(string(inputBytes), "\n") == "[skip ach test]" {
+	if string(inputBytes) == "[skip ach test]\n" {
 		cautionText("skip")
 		return true, nil
 	}
 
-	shell := fmt.Sprintf("cat %s | ./run.sh > %s", testInputName(n), testActualName(n))
+	shell := fmt.Sprintf("cat %s | ./run.sh > %s", testInputName(sampleCasesDir, n), testActualName(sampleCasesDir, n))
 
 	if err := exec.Command("bash", "-c", shell).Run(); err != nil {
 		return false, err
 	}
 
-	actual, err := ioutil.ReadFile(testActualName(n))
+	actual, err := ioutil.ReadFile(testActualName(sampleCasesDir, n))
 	if err != nil {
 		return false, err
 	}
 
-	expected, err := ioutil.ReadFile(testExpectedName(n))
+	expected, err := ioutil.ReadFile(testExpectedName(sampleCasesDir, n))
 	if err != nil {
 		return false, err
 	}

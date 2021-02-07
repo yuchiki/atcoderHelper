@@ -9,7 +9,7 @@ import (
 func TestCreate_Execute(t *testing.T) {
 	testutil.TestCaseTemplates{
 		testutil.HasName("create"),
-		// This is a temporal implementation with temporal args, so the test are given later.
+		// TODO: This is a temporal implementation with temporal args, so the test are given later.
 	}.
 		Build(NewContestCreateCmd).
 		Run(t)
