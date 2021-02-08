@@ -12,7 +12,7 @@ default: fmt build test lint yamllint generate-docs
 all: fmt build test yamllint lint generate-docs dry-release
 
 install:
-	go install ./cmd/ach
+	go install ${FLAGS} ./cmd/ach
 
 
 build: ach gendocs
