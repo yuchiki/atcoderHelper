@@ -30,7 +30,7 @@ func SetSampleCasesDir(dirName string) Option {
 // NewTestCmd returns test command
 func NewTestCmd(options ...Option) *cobra.Command {
 	opts := opts{
-		SampleCasesDir: "",
+		SampleCasesDir: "sampleCases",
 	}
 
 	for _, option := range options {

@@ -9,9 +9,9 @@ import (
 
 func main() {
 	cmd := ach.NewAchCmd()
+	cmd.DisableAutoGenTag = true
 
-	err := doc.GenMarkdownTree(cmd, "docs/cmd")
-	if err != nil {
+	if err := doc.GenMarkdownTree(cmd, "docs/cmd"); err != nil {
 		log.Fatal(err)
 	}
 }
