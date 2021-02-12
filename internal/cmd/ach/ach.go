@@ -1,6 +1,7 @@
 package ach
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -50,8 +51,11 @@ func initConfig() {
 }
 
 func readAppConfig() {
+	var configFileName string
+
 	if cfgFile != "" {
 		viper.SetConfigName(cfgFile)
+		configFileName = cfgFile
 	} else {
 		home, err := os.UserHomeDir()
 		if err != nil {
@@ -60,30 +64,36 @@ func readAppConfig() {
 
 		viper.AddConfigPath(path.Join(home, ".ach"))
 		viper.SetConfigName("config")
+		configFileName = "config"
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("failed to read app config %s: %w", configFileName, err))
 	}
 
 	if err := viper.UnmarshalExact(&config.GlobalAppConfig); err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("failed to parse app config %s: %w", configFileName, err))
 	}
 }
 
 func readTaskConfig() {
+	var configFileName string
+
 	if taskCfgFile != "" {
-		viper.SetConfigFile(cfgFile)
+		viper.SetConfigFile(taskCfgFile)
+
+		configFileName = cfgFile
 	} else {
 		viper.AddConfigPath(".")
 		viper.SetConfigName("achTaskConfig")
+		configFileName = "achTaskConfig"
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Print(err)
+		log.Print(fmt.Errorf("failed to read task config %s: %w", configFileName, err))
 	}
 
 	if err := viper.UnmarshalExact(&config.GlobalTaskConfig); err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("failed to parse app config %s: %w", configFileName, err))
 	}
 }

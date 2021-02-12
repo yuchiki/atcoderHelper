@@ -9,16 +9,22 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/yuchiki/atcoderHelper/internal/config"
 )
 
 const defaultSampleCasesDir = "sampleCases"
+
+// Option is a functional option for NewTestCmd.
+type Option func(*opts)
 
 type opts struct {
 	SampleCasesDir string
 }
 
-// Option is a functional option for NewTestCmd.
-type Option func(*opts)
+type summary struct {
+	total int
+	pass  int
+}
 
 // SetSampleCasesDir changes sampleCaseDir from the default.
 func SetSampleCasesDir(dirName string) Option {
@@ -53,34 +59,26 @@ The specification is not fixed. The below is the current temporal behaviour.
   - If case{n}.input is "[skip ach test]\n", the case is skipped.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			language, err := config.GetLanguage()
+			if err != nil {
+				return err
+			}
+
 			fmt.Println("building...")
-			if out, err := exec.Command("bash", "-c", "./build.sh").Output(); err != nil {
+			if out, err := exec.Command("bash", "-c", language.Build).Output(); err != nil { //nolint: gosec
 				fmt.Print(string(out))
 
 				return err
 			}
 			fmt.Println("built.")
 
-			i := 1
-			successes, cases := 0, 0
-			for {
-				if _, err := os.Stat(testInputName(opts.SampleCasesDir, i)); err == nil {
-					result, err := testNthCase(opts.SampleCasesDir, i)
-					cases++
-					if err != nil {
-						return err
-					}
-					if result {
-						successes++
-					}
-				} else {
-					break
-				}
-				i++
+			summary, err := testAll(opts.SampleCasesDir, language)
+			if err != nil {
+				return err
 			}
 
-			fmt.Printf("total: %d/%d ", successes, cases)
-			if successes == cases {
+			fmt.Printf("total: %d/%d ", summary.pass, summary.total)
+			if summary.pass == summary.total {
 				successText("success")
 			} else {
 				errorText("fail")
@@ -89,6 +87,34 @@ The specification is not fixed. The below is the current temporal behaviour.
 			return nil
 		},
 	}
+}
+
+func testAll(sampleDir string, language config.Language) (summary, error) {
+	i := 1
+	successes, cases := 0, 0
+
+	for {
+		if _, err := os.Stat(testInputName(sampleDir, i)); err == nil {
+			result, err := testNthCase(sampleDir, language, i)
+			cases++
+
+			if err != nil {
+				return summary{}, err
+			}
+
+			if result {
+				successes++
+			}
+		} else {
+			break
+		}
+		i++
+	}
+
+	return summary{
+		total: cases,
+		pass:  successes,
+	}, nil
 }
 
 func testInputName(sampleCasesDir string, n int) string {
@@ -103,7 +129,7 @@ func testActualName(sampleCasesDir string, n int) string {
 	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.actual", n))
 }
 
-func testNthCase(sampleCasesDir string, n int) (bool, error) {
+func testNthCase(sampleCasesDir string, language config.Language, n int) (bool, error) {
 	fmt.Printf("case %d: ", n)
 
 	inputBytes, err := ioutil.ReadFile(testInputName(sampleCasesDir, n))
@@ -117,7 +143,11 @@ func testNthCase(sampleCasesDir string, n int) (bool, error) {
 		return true, nil
 	}
 
-	shell := fmt.Sprintf("cat %s | ./run.sh > %s", testInputName(sampleCasesDir, n), testActualName(sampleCasesDir, n))
+	shell := fmt.Sprintf(
+		"cat %s | %s > %s",
+		testInputName(sampleCasesDir, n),
+		language.Run,
+		testActualName(sampleCasesDir, n))
 
 	if err := exec.Command("bash", "-c", shell).Run(); err != nil {
 		return false, err
