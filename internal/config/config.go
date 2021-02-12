@@ -26,13 +26,14 @@ type AppConfig struct {
 	Username        string
 	Languages       []Language
 	Templates       []Template
-	DefaultTemplate string `mapstructure:"default-template"`
+	ConfigDir       string `mapstructure:"-" yaml:"-"`
+	DefaultTemplate string `mapstructure:"default-template" yaml:"default-template"`
 }
 
 // Language is an information of a programming language used when solving a task.
 type Language struct {
 	Name        string
-	AtCoderName string `mapstructure:"atcoder-name"`
+	AtCoderName string `mapstructure:"atcoder-name" yaml:"atcoder-name"`
 	Build       string
 	Run         string
 }
@@ -41,14 +42,14 @@ type Language struct {
 type Template struct {
 	Name              string
 	Language          string
-	TemplateDirectory string `mapstructure:"template-directory"`
-	SourceFile        string `mapstructure:"source-file"`
+	TemplateDirectory string `mapstructure:"template-directory" yaml:"template-directory"`
+	SourceFile        string `mapstructure:"source-file" yaml:"source-file"`
 }
 
 // TaskConfig is a configuration for each task.
 type TaskConfig struct {
-	ContestID string `mapstructure:"contest-id"`
-	TaskID    string `mapstructure:"task-id"`
+	ContestID string `mapstructure:"contest-id" yaml:"contest-id"`
+	TaskID    string `mapstructure:"task-id" yaml:"task-id"`
 	Template  string
 }
 
@@ -63,7 +64,7 @@ func (t *AppConfig) GetLanguage(name string) (Language, error) {
 	return Language{}, fmt.Errorf("language %s not found: %w", name, ErrLanguageNotFound)
 }
 
-// GetLanguage finds a language by name.
+// GetLanguage finds a language designated by task config.
 func GetLanguage() (Language, error) {
 	template, err := GetTemplate()
 	if err != nil {
@@ -84,7 +85,12 @@ func (t *AppConfig) GetTemplate(name string) (Template, error) {
 	return Template{}, fmt.Errorf("template %s not found: %w", name, ErrTemplateNotFound)
 }
 
-// GetTemplate finds a template by name.
+// GetTemplate finds a template designated by task config.
 func GetTemplate() (Template, error) {
 	return GlobalAppConfig.GetTemplate(GlobalTaskConfig.Template)
+}
+
+// GetDefaultTemplate finds a template.
+func GetDefaultTemplate() (Template, error) {
+	return GlobalAppConfig.GetTemplate(GlobalAppConfig.DefaultTemplate)
 }
