@@ -29,15 +29,18 @@ func NewAchCmd() *cobra.Command {
 		Long:  `ach automates routine work you does when you participate AtCoder contests. `,
 	}
 
-	user, err := user.Current()
-	if err != nil {
-		log.Fatal(fmt.Errorf("NewAchCmd: %w", err))
-	}
+	defaultConfigFile := path.Join("$HOME", ".ach", "config.yaml")
 
-	defaultConfigFile := path.Join(user.HomeDir, ".ach", "config.yaml")
-
-	cmd.PersistentFlags().StringVar(&cfgFile, "config", defaultConfigFile, "config file (default is $HOME/.ach/config.yaml)")
-	cmd.PersistentFlags().StringVar(&taskCfgFile, "task-config", "./achTaskConfig.yaml", "task config file (default is ./achTaskConfig.yaml")
+	cmd.PersistentFlags().StringVar(
+		&cfgFile,
+		"config",
+		defaultConfigFile,
+		"config file")
+	cmd.PersistentFlags().StringVar(
+		&taskCfgFile,
+		"task-config",
+		"./achTaskConfig.yaml",
+		"task config file")
 
 	registerSubcommands(cmd)
 
@@ -62,7 +65,16 @@ func initConfig() {
 func readAppConfig() {
 	v := viper.New()
 
-	absCfgFile, err := filepath.Abs(cfgFile)
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(fmt.Errorf("NewAchCmd: %w", err))
+	}
+
+	home := user.HomeDir
+
+	homeReplacedCfgFile := strings.Replace(cfgFile, "$HOME", home, 1)
+
+	absCfgFile, err := filepath.Abs(homeReplacedCfgFile)
 	if err != nil {
 		log.Fatal(fmt.Errorf("failed to convert config to its absolute path: %w", err))
 	}

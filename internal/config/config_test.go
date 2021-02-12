@@ -206,7 +206,7 @@ func newSampleAppConfig() AppConfig {
 				SourceFile:        "Program.cs",
 			},
 		},
-		configDir:       "sample",
+		ConfigDir:       "sample",
 		DefaultTemplate: "csharp",
 	}
 }

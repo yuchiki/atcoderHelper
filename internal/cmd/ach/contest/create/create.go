@@ -47,14 +47,10 @@ func runE(cmd *cobra.Command, args []string) error {
 
 	output, err := exec.Command("mkdir", contestName).CombinedOutput()
 	if err != nil {
-
 		return fmt.Errorf("%s: %w", output, err)
 	}
 
-	absTemplateDir, err := getAbsTemplateDirectory(cmd, template.TemplateDirectory)
-	if err != nil {
-		return err
-	}
+	absTemplateDir := getAbsTemplateDirectory(template.TemplateDirectory)
 
 	for _, taskName := range taskNames {
 		taskDirName := path.Join(contestName, taskName)
@@ -132,10 +128,10 @@ func createSampleCases(sampleDirName string, n int) error {
 	return nil
 }
 
-func getAbsTemplateDirectory(cmd *cobra.Command, templateDir string) (string, error) {
+func getAbsTemplateDirectory(templateDir string) string {
 	if path.IsAbs(templateDir) {
-		return templateDir, nil
+		return templateDir
 	}
 
-	return path.Join(config.GlobalAppConfig.ConfigDir, templateDir), nil
+	return path.Join(config.GlobalAppConfig.ConfigDir, templateDir)
 }

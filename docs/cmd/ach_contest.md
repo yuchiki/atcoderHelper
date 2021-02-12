@@ -15,8 +15,8 @@ manipulates an AtCoder contest.
 ### Options inherited from parent commands
 
 ```
-      --config string        config file (default is $HOME/.ach/config.yaml)
-      --task-config string   task config file (default is ./achTaskConfig.yaml
+      --config string        config file (default "$HOME/.ach/config.yaml")
+      --task-config string   task config file (default "./achTaskConfig.yaml")
 ```
 
 ### SEE ALSO
