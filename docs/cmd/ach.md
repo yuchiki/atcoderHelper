@@ -9,7 +9,9 @@ ach automates routine work you does when you participate AtCoder contests.
 ### Options
 
 ```
-  -h, --help   help for ach
+      --config string        config file (default is $HOME/.ach/config.yaml)
+  -h, --help                 help for ach
+      --task-config string   task config file (default is ./achTaskConfig.yaml
 ```
 
 ### SEE ALSO

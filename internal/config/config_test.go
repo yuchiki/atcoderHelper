@@ -79,27 +79,18 @@ func TestAppConfig_GetTemplate(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestGetLanguage(t *testing.T) {
 	origAppConfig := GlobalAppConfig
 	origTaskConfig := GlobalTaskConfig
+
 	defer func() {
 		GlobalAppConfig = origAppConfig
 		GlobalTaskConfig = origTaskConfig
 	}()
 
 	config := newSampleAppConfig()
-
-	taskConfigWithInvalidTemplateName := newSampleTaskConfig()
-	taskConfigWithInvalidTemplateName.Template = "not-existing-template"
-
-	appConfigWithInvalidLangaugeName := newSampleAppConfig()
-	appConfigWithInvalidLangaugeName.Templates[0] = Template{
-		Name:     "csharp-template",
-		Language: "invalid-language",
-	}
 
 	testcases := []struct {
 		name       string
@@ -116,14 +107,14 @@ func TestGetLanguage(t *testing.T) {
 		},
 		{
 			name:       "returns error when language not found",
-			appConfig:  appConfigWithInvalidLangaugeName,
+			appConfig:  newAppConfigWithInvalidLanguageName(),
 			taskConfig: newSampleTaskConfig(),
 			err:        ErrLanguageNotFound,
 		},
 		{
 			name:       "returns error when template not found",
 			appConfig:  newSampleAppConfig(),
-			taskConfig: taskConfigWithInvalidTemplateName,
+			taskConfig: newTaskConfigWithInvalidTemplateName(),
 			err:        ErrTemplateNotFound,
 		},
 	}
@@ -142,7 +133,6 @@ func TestGetLanguage(t *testing.T) {
 			if !errors.Is(err, testcase.err) {
 				t.Errorf("expected %v, but actual %v", testcase.err, err)
 			}
-
 		})
 	}
 }
@@ -150,14 +140,13 @@ func TestGetLanguage(t *testing.T) {
 func TestGetTemplate(t *testing.T) {
 	origAppConfig := GlobalAppConfig
 	origTaskConfig := GlobalTaskConfig
+
 	defer func() {
 		GlobalAppConfig = origAppConfig
 		GlobalTaskConfig = origTaskConfig
 	}()
 
 	config := newSampleAppConfig()
-	taskConfigWithInvalidTemplateName := newSampleTaskConfig()
-	taskConfigWithInvalidTemplateName.Template = "not-existing-template"
 
 	testcases := []struct {
 		name       string
@@ -175,7 +164,7 @@ func TestGetTemplate(t *testing.T) {
 		{
 			name:       "returns error when template not found",
 			appConfig:  newSampleAppConfig(),
-			taskConfig: taskConfigWithInvalidTemplateName,
+			taskConfig: newTaskConfigWithInvalidTemplateName(),
 			err:        ErrTemplateNotFound,
 		},
 	}
@@ -194,7 +183,6 @@ func TestGetTemplate(t *testing.T) {
 			if !errors.Is(err, testcase.err) {
 				t.Errorf("expected %v, but actual %v", testcase.err, err)
 			}
-
 		})
 	}
 }
@@ -228,4 +216,21 @@ func newSampleTaskConfig() TaskConfig {
 		TaskID:    "barTask",
 		Template:  "csharp-template",
 	}
+}
+
+func newTaskConfigWithInvalidTemplateName() TaskConfig {
+	config := newSampleTaskConfig()
+	config.Template = "not-existing-template"
+
+	return config
+}
+
+func newAppConfigWithInvalidLanguageName() AppConfig {
+	config := newSampleAppConfig()
+	config.Templates[0] = Template{
+		Name:     "csharp-template",
+		Language: "invalid-language",
+	}
+
+	return config
 }

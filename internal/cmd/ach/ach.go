@@ -1,7 +1,6 @@
 package ach
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path"
@@ -53,37 +52,38 @@ func initConfig() {
 func readAppConfig() {
 	if cfgFile != "" {
 		viper.SetConfigName(cfgFile)
-		viper.ReadInConfig()
 	} else {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 
 		viper.AddConfigPath(path.Join(home, ".ach"))
 		viper.SetConfigName("config")
-		err = viper.ReadInConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
 	}
 
-	viper.UnmarshalExact(&config.GlobalAppConfig)
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := viper.UnmarshalExact(&config.GlobalAppConfig); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func readTaskConfig() {
 	if taskCfgFile != "" {
 		viper.SetConfigFile(cfgFile)
-		viper.ReadInConfig()
 	} else {
 		viper.AddConfigPath(".")
 		viper.SetConfigName("achTaskConfig")
-		err := viper.ReadInConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
 	}
 
-	viper.UnmarshalExact(&config.GlobalTaskConfig)
+	if err := viper.ReadInConfig(); err != nil {
+		log.Print(err)
+	}
+
+	if err := viper.UnmarshalExact(&config.GlobalTaskConfig); err != nil {
+		log.Fatal(err)
+	}
 }
