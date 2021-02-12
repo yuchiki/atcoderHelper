@@ -20,6 +20,13 @@ ach contest create [contestName] [flags]
   -h, --help               help for create
 ```
 
+### Options inherited from parent commands
+
+```
+      --config string        config file (default is $HOME/.ach/config.yaml)
+      --task-config string   task config file (default is ./achTaskConfig.yaml
+```
+
 ### SEE ALSO
 
 * [ach contest](ach_contest.md)	 - manipulates an AtCoder contest

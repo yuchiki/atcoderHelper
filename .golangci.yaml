@@ -50,3 +50,7 @@ severity:
   rules:
     - linters: [godox]
       severity: info
+
+issues:
+  exclude:
+    - Using the variable on range scope `testcase` in function literal
