@@ -74,6 +74,7 @@ jobs:
         run: git diff --exit-code
   integration-test:
     name: integration-test
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: run integration.sh
