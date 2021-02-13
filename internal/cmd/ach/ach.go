@@ -83,7 +83,9 @@ func readAppConfig() {
 	v.AddConfigPath("/")
 
 	if err := v.ReadInConfig(); err != nil {
-		log.Fatal(fmt.Errorf("failed to read app config %s: %w", absCfgFile, err))
+		fmt.Println("note: Configfile seems not to be set.")
+
+		return
 	}
 
 	if err := v.UnmarshalExact(&config.GlobalAppConfig); err != nil {
