@@ -1,0 +1,13 @@
+---
+username: "foo"
+languages:
+  - name: "lang1"
+    atcoder-name: "full name of lang1"
+    build: "echo build $SOURCE_FILE"
+    run: "echo run $SOURCE_FILE"
+templates:
+  - name: "template1"
+    language: "lang1"
+    template-directory: "templates/template1"
+    source-file: "source.txt"
+default-template: "template1"
