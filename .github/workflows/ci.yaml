@@ -72,6 +72,12 @@ jobs:
         run: make generate-docs
       - name: no diff
         run: git diff --exit-code
+  integration-test:
+    name: integration-test
+    steps:
+      - uses: actions/checkout@v2
+      - name: run integration.sh
+        run: sh ./integration.sh
   notification:
     name: notification
     if: always()
