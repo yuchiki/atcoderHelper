@@ -18,35 +18,30 @@
 
 # not yet
 
-# v0.2
+# v0.x
 
+- It can open the given editor automatically.
 - It can create a contest directory with specified contest templates
   - `ach contest create -t foo.yaml <name>`
   - `ach contest create ---default-contest <name>`
 - It has an integration test running on a container.
 
-# v0.3
-
-- it can spread task-template
-  - `ach contest create ...`
-- it can use multiple templates and languages
-
-# v0.4
+# v0.x
 
 - it can fetch the list of contests
   - `ach contest upcoming`
   - `ach contest list <matcher>`
 
-# v0.5
+# v0.x
 
 - it can create a contest directory according to fetched information
   - `ach contest crete <abc001>`
 
-# v0.6
+# v0.x
 
 - it can login and logout
   - `ach login`
 
-# v0.7
+# v0.x
 
 - it can submit and fetch testCases
