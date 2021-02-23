@@ -21,9 +21,6 @@
 # v0.x
 
 - It can open the given editor automatically.
-- It can create a contest directory with specified contest templates
-  - `ach contest create -t foo.yaml <name>`
-  - `ach contest create ---default-contest <name>`
 - It has an integration test running on a container.
 
 # v0.x
@@ -45,3 +42,10 @@
 # v0.x
 
 - it can submit and fetch testCases
+
+
+# vx.x
+
+- It can create a contest directory with specified contest templates
+  - `ach contest create -t foo.yaml <name>`
+  - `ach contest create ---default-contest <name>`
