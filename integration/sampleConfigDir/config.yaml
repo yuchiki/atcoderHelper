@@ -10,4 +10,5 @@ templates:
     language: "lang1"
     template-directory: "templates/template1"
     source-file: "source.txt"
+editor-command: 'echo "open $TASK_NAME"'
 default-template: "template1"
