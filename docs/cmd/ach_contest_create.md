@@ -18,6 +18,7 @@ ach contest create [contestName] [flags]
 ```
   -d, --default-template   (required) use default contest template
   -h, --help               help for create
+      --open-editor        open editor for each task (default true)
 ```
 
 ### Options inherited from parent commands

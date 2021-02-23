@@ -27,6 +27,7 @@ type AppConfig struct {
 	Languages       []Language
 	Templates       []Template
 	ConfigDir       string `mapstructure:"-" yaml:"-"`
+	EditorCommand   string `mapstructure:"editor-command" yaml:"editor-command"`
 	DefaultTemplate string `mapstructure:"default-template" yaml:"default-template"`
 }
 

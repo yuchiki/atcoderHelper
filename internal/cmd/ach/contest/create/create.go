@@ -12,6 +12,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+var openEditor = new(bool)
+
 // NewContestCreateCmd returns a new contest create command.
 func NewContestCreateCmd() *cobra.Command {
 	useDefaultTemplate := new(bool)
@@ -28,6 +30,7 @@ D is for directory.
 	}
 
 	cmd.Flags().BoolVarP(useDefaultTemplate, "default-template", "d", false, "(required) use default contest template")
+	cmd.Flags().BoolVar(openEditor, "open-editor", true, "open editor for each task")
 
 	if cmd.MarkFlagRequired("default-template") != nil {
 		log.Fatal("default-template require")
@@ -53,43 +56,65 @@ func runE(cmd *cobra.Command, args []string) error {
 	absTemplateDir := getAbsTemplateDirectory(template.TemplateDirectory)
 
 	for _, taskName := range taskNames {
+		if err := initializeTaskDirectory(absTemplateDir, contestName, taskName); err != nil {
+			return err
+		}
+	}
+
+	for _, taskName := range taskNames {
 		taskDirName := path.Join(contestName, taskName)
-		if output, err := exec.Command("cp", "-r", absTemplateDir, taskDirName).CombinedOutput(); err != nil {
-			fmt.Print(output)
 
-			return fmt.Errorf("%s: %w", output, err)
+		if *openEditor {
+			cmd := exec.Command("bash", "-c", config.GlobalAppConfig.EditorCommand) //nolint:gosec // This is intended.
+			cmd.Env = append(cmd.Env, fmt.Sprintf("TASK_PATH=%v", taskDirName))
+
+			output, err := cmd.CombinedOutput()
+			if err != nil {
+				return fmt.Errorf("failed to start editor, message=\"%s\": %w", output, err)
+			}
 		}
+	}
 
-		taskConfig := config.TaskConfig{
-			ContestID: contestName,
-			TaskID:    taskName,
-			Template:  config.GlobalAppConfig.DefaultTemplate,
-		}
+	return nil
+}
 
-		taskConfigYaml, err := yaml.Marshal(taskConfig)
-		if err != nil {
-			return err
-		}
+func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error {
+	taskDirName := path.Join(contestName, taskName)
+	if output, err := exec.Command("cp", "-r", absTemplateDir, taskDirName).CombinedOutput(); err != nil {
+		fmt.Print(output)
 
-		taskConfigName := path.Join(taskDirName, "achTaskConfig.yaml")
+		return fmt.Errorf("%s: %w", output, err)
+	}
 
-		taskConfigFile, err := os.Create(taskConfigName)
-		if err != nil {
-			return err
-		}
-		defer taskConfigFile.Close()
+	taskConfig := config.TaskConfig{
+		ContestID: contestName,
+		TaskID:    taskName,
+		Template:  config.GlobalAppConfig.DefaultTemplate,
+	}
 
-		_, err = taskConfigFile.Write(taskConfigYaml)
-		if err != nil {
-			return err
-		}
+	taskConfigYaml, err := yaml.Marshal(taskConfig)
+	if err != nil {
+		return err
+	}
 
-		sampleDirName := path.Join(taskDirName, "sampleCases")
+	taskConfigName := path.Join(taskDirName, "achTaskConfig.yaml")
 
-		err = createSampleCases(sampleDirName, 5)
-		if err != nil {
-			return err
-		}
+	taskConfigFile, err := os.Create(taskConfigName)
+	if err != nil {
+		return err
+	}
+	defer taskConfigFile.Close()
+
+	_, err = taskConfigFile.Write(taskConfigYaml)
+	if err != nil {
+		return err
+	}
+
+	sampleDirName := path.Join(taskDirName, "sampleCases")
+
+	err = createSampleCases(sampleDirName, 5)
+	if err != nil {
+		return err
 	}
 
 	return nil

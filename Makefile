@@ -5,11 +5,11 @@ LD_FLAGS += -X '$(VERSION_PATH).edited=$(shell if git diff HEAD --exit-code > /d
 LD_FLAGS += -X '$(VERSION_PATH).date=$(shell date '+%Y/%m/%d %H:%M:%S %Z')'
 FLAGS := -ldflags "$(LD_FLAGS)"
 
-.PHONY: install clean build ach test lint yamllint generate-docs dry-release
+.PHONY: install clean build ach test lint yamllint generate-docs dry-release integration
 
 default: fmt build test lint yamllint generate-docs
 
-all: fmt build test yamllint lint generate-docs dry-release
+all: fmt build test yamllint lint generate-docs integration dry-release
 
 install:
 	go install ${FLAGS} ./cmd/ach
@@ -43,6 +43,9 @@ lint:
 
 yamllint:
 	yamllint .
+
+integration:
+	./integration_test.sh
 
 clean:
 	rm -rf bin dist
