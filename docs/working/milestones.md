@@ -2,6 +2,11 @@
 
 # done
 
+# v0.2
+
+- It can open the given editor automatically.
+- It has an integration test running on a container.
+
 # v0.1
 
 - It can test testcases
@@ -17,11 +22,6 @@
 - documented in Japanese
 
 # not yet
-
-# v0.x
-
-- It can open the given editor automatically.
-- It has an integration test running on a container.
 
 # v0.x
 
