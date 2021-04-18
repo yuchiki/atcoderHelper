@@ -36,7 +36,45 @@ func TestGetChildByTag(t *testing.T) {
 }
 
 func TestGetAttr(t *testing.T) {
-	t.Fatal("not implemented yet")
+	query := func(node QueryableNode) (string, error) {
+		return node.GetNodeByID("root").GetAttr("foo")
+	}
+
+	type testcase struct {
+		name     string
+		html     string
+		expected string
+		err      error
+	}
+
+	testcases := []testcase{
+		{
+			name:     "OK",
+			html:     `<div id="root" foo="bar"></div>`,
+			expected: "bar",
+		},
+		{
+			name: "error when the node has not attribute 'foo'",
+			html: `<div id="root"><</div>`,
+			err:  ErrAttrNotFound,
+		},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			t.Helper()
+			node := parseHTML(testcase.html, t)
+			expected := testcase.expected
+			actual, err := query(node)
+			if !errors.Is(err, testcase.err) {
+				t.Fatalf("expected err %v, but actual err %v", testcase.err, err)
+			}
+
+			if actual != expected {
+				t.Errorf("expected %s, but actual %s", expected, actual)
+			}
+		})
+	}
 }
 
 func TestGetText(t *testing.T) {
@@ -54,12 +92,12 @@ func TestGetText(t *testing.T) {
 	testcases := []testcase{
 		{
 			name:     "OK",
-			html:     "<div id=\"root\">foo</div>",
+			html:     `<div id="root">foo</div>`,
 			expected: "foo",
 		},
 		{
 			name: "error when the node is not a text node",
-			html: "<div id=\"root\"><div></div></div>",
+			html: `<div id="root"><div></div></div>`,
 			err:  ErrNotTextNode,
 		},
 	}
