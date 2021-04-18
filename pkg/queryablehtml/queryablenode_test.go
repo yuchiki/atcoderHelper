@@ -32,7 +32,46 @@ func TestGetChildrenByTag(t *testing.T) {
 }
 
 func TestGetChildByTag(t *testing.T) {
-	t.Fatal("not implemented yet")
+	query := func(node QueryableNode) QueryableNode {
+		return node.GetNodeByID("root").GetChildByTag("div")
+	}
+
+	type testcase struct {
+		name     string
+		html     string
+		expected string
+		err      error
+	}
+
+	testcases := []testcase{
+		{
+			name:     "OK",
+			html:     `<div id="root"><a href="dummy">foo</a><div>bar</div></div>`,
+			expected: "<div>bar</div>",
+		},
+		{
+			name: "error when the node has not attribute 'foo'",
+			html: `<div id="root"><a href="dummy">foo</a></div>`,
+			err:  ErrNodeNotFound,
+		},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			t.Helper()
+			node := parseHTML(testcase.html, t)
+			expected := testcase.expected
+			targetNode := query(node)
+			if !errors.Is(targetNode.Err, testcase.err) {
+				t.Fatalf("expected err %v, but actual err %v", testcase.err, targetNode.Err)
+			}
+
+			if targetNode.Err == nil && targetNode.String() != expected {
+				t.Errorf("expected %s, but actual %s", expected, targetNode.String())
+			}
+		})
+	}
+
 }
 
 func TestGetAttr(t *testing.T) {

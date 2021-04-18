@@ -82,14 +82,7 @@ func (n QueryableNode) String() string {
 	if n.Err != nil {
 		return n.Err.Error()
 	}
-
-	buf := new(bytes.Buffer)
-	err := html.Render(buf, n.Node)
-	if err != nil {
-		return err.Error()
-	}
-
-	return buf.String()
+	return nodeToString(n.Node)
 }
 
 func getNodeByID(node *html.Node, id string) (*html.Node, error) {
@@ -111,7 +104,7 @@ func getNodeByID(node *html.Node, id string) (*html.Node, error) {
 		return targetNode, nil
 	}
 
-	return nil, fmt.Errorf("node with id '%s' is not found: %w", id, ErrNodeNotFound)
+	return nil, fmt.Errorf("node with id '%s' is not found in children of %s: %w", id, nodeToString(node), ErrNodeNotFound)
 }
 
 func getAttr(node *html.Node, key string) (string, error) {
@@ -121,7 +114,7 @@ func getAttr(node *html.Node, key string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("attr '%s' not found: %w", key, ErrAttrNotFound)
+	return "", fmt.Errorf("attr '%s' not found in %s: %w", key, nodeToString(node), ErrAttrNotFound)
 }
 
 func getID(node *html.Node) string {
@@ -136,7 +129,7 @@ func getChildByTag(node *html.Node, tag string) (*html.Node, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("node with tag '%s' is not found: %w", tag, ErrNodeNotFound)
+	return nil, fmt.Errorf("node with tag '%s' is not found in children of %s: %w", tag, nodeToString(node), ErrNodeNotFound)
 }
 
 func getChildrenByTag(node *html.Node, tag string) []*html.Node {
@@ -148,4 +141,14 @@ func getChildrenByTag(node *html.Node, tag string) []*html.Node {
 	}
 
 	return children
+}
+
+func nodeToString(node *html.Node) string {
+	buf := new(bytes.Buffer)
+	err := html.Render(buf, node)
+	if err != nil {
+		return err.Error()
+	}
+
+	return buf.String()
 }
