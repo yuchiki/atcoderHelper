@@ -28,6 +28,9 @@ func FetchIncoming() ([]ContestInfo, error) {
 		GetChildByTag("table").
 		GetChildByTag("tbody").
 		GetChildrenByTag("tr")
+	if err != nil {
+		return nil, err
+	}
 
 	trToContestInfo := func(tr queryablehtml.QueryableNode) (ContestInfo, error) {
 		tds, err := tr.GetChildrenByTag("td")

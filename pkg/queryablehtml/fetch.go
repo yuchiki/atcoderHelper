@@ -42,12 +42,9 @@ func SetMockFetcher(expectedURL string, rawHtml string, t *testing.T) func() {
 		}
 
 		return NewQueryableNode(doc), nil
-
 	}
 
 	return func() { Fetch = orig }
 }
 
-var (
-	Fetch = fetch
-)
+var Fetch = fetch
