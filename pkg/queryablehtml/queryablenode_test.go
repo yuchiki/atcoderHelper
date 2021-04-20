@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"golang.org/x/net/html"
 )
 
@@ -66,7 +67,58 @@ func TestGetNodeByID(t *testing.T) {
 }
 
 func TestGetChildrenByTag(t *testing.T) {
-	t.Fatal("not implemented yet")
+	query := func(node QueryableNode) ([]QueryableNode, error) {
+		return node.GetNodeByID("root").GetChildrenByTag("div")
+	}
+
+	type testcase struct {
+		name     string
+		html     string
+		expected []string
+		err      error
+	}
+
+	testcases := []testcase{
+		{
+			name: "OK",
+			html: `
+	<div id="root">
+		<div>div1</div>
+		<a href="dummy">a1</a>
+		<div>div2</div>
+		<div>div3</div>
+	</div>
+`,
+			expected: []string{
+				"<div>div1</div>",
+				"<div>div2</div>",
+				"<div>div3</div>",
+			},
+		},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			t.Helper()
+			node := parseHTML(testcase.html, t)
+			expected := testcase.expected
+			targetNodes, err := query(node)
+
+			var actual []string
+			for _, targetNode := range targetNodes {
+				actual = append(actual, targetNode.String())
+			}
+
+			if !errors.Is(err, testcase.err) {
+				t.Fatalf("expected err %v, but actual err %v", testcase.err, err)
+			}
+
+			diff := cmp.Diff(actual, expected)
+			if err == nil && diff != "" {
+				t.Error(diff)
+			}
+		})
+	}
 }
 
 func TestGetChildByTag(t *testing.T) {
@@ -193,7 +245,6 @@ func TestGetText(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestString(t *testing.T) {
