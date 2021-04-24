@@ -14,15 +14,19 @@ var (
 	ErrNotTextNode  = errors.New("node is not text node")
 )
 
+// QueryableNode is an HTML node that can be manipulated by query methods.
+// It can convey failure to the next query, if a query fails.
 type QueryableNode struct {
 	Node *html.Node
 	Err  error
 }
 
+// NewQueryableNode creates a QueryableNode from the given *html.Node.
 func NewQueryableNode(node *html.Node) QueryableNode {
 	return QueryableNode{node, nil}
 }
 
+// GetNodeByID finds the node with the given ID in the whole descendants.
 func (n QueryableNode) GetNodeByID(id string) QueryableNode {
 	if n.Err != nil {
 		return n
@@ -33,6 +37,7 @@ func (n QueryableNode) GetNodeByID(id string) QueryableNode {
 	return QueryableNode{targetNode, err}
 }
 
+// GetChildrenByTag finds all the children nodes with the given tag.
 func (n QueryableNode) GetChildrenByTag(tag string) ([]QueryableNode, error) {
 	if n.Err != nil {
 		return nil, n.Err
@@ -48,6 +53,7 @@ func (n QueryableNode) GetChildrenByTag(tag string) ([]QueryableNode, error) {
 	return queryableNodes, nil
 }
 
+// GetChildByTag finds a child node with a given tag.
 func (n QueryableNode) GetChildByTag(tag string) QueryableNode {
 	if n.Err != nil {
 		return n
@@ -58,6 +64,7 @@ func (n QueryableNode) GetChildByTag(tag string) QueryableNode {
 	return QueryableNode{targetNode, err}
 }
 
+// GetAttr returns the value of the attribution.
 func (n QueryableNode) GetAttr(key string) (string, error) {
 	if n.Err != nil {
 		return "", n.Err
@@ -66,6 +73,8 @@ func (n QueryableNode) GetAttr(key string) (string, error) {
 	return getAttr(n.Node, key)
 }
 
+// GetText returns the innerText of a node.
+// If the inner element is not a text, it returns error.
 func (n QueryableNode) GetText() (string, error) {
 	if n.Err != nil {
 		return "", n.Err
@@ -80,6 +89,7 @@ func (n QueryableNode) GetText() (string, error) {
 	return child.Data, nil
 }
 
+// String stringfies the node.
 func (n QueryableNode) String() string {
 	if n.Err != nil {
 		return n.Err.Error()
