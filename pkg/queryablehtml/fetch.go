@@ -26,6 +26,10 @@ func fetch(url string) (QueryableNode, error) {
 	return NewQueryableNode(doc), nil
 }
 
+// SetMockFetcher replaces function Fetch to a mock fetcher function,
+// that returns the result of parsing given raw HTML.
+// the return value is a function that restores the value of field Fetch.
+// it must be called at the last of each testcase, like that `defer callback()`
 func SetMockFetcher(t *testing.T, expectedURL string, rawHTML string) func() {
 	t.Helper()
 
@@ -49,6 +53,9 @@ func SetMockFetcher(t *testing.T, expectedURL string, rawHTML string) func() {
 	return func() { Fetch = orig }
 }
 
+// SetFailingMockFetcher replaces function Fetch to a mock fetcher function that always fails.
+// the return value is a function that restores the value of field Fetch.
+// it must be called at the last of each testcase, like that `defer callback()`
 func SetFailingMockFetcher(t *testing.T, expectedURL string) func() {
 	t.Helper()
 
@@ -65,4 +72,7 @@ func SetFailingMockFetcher(t *testing.T, expectedURL string) func() {
 	return func() { Fetch = orig }
 }
 
-var Fetch = fetch
+var (
+	// Fetch is a function to fetch contents. It's return value is a queryable node.
+	Fetch = fetch
+)

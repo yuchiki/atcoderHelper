@@ -16,10 +16,7 @@ type ContestInfo struct {
 	Name string
 }
 
-// URLを渡すとQueryableNodesを返す関数を切り出し
-// 何かのパッケージのデフォルトにし
-// テスト時に差し替えられるようにする
-
+// FetchIncoming fetches information of incoming contests.
 func FetchIncoming() ([]ContestInfo, error) {
 	node, err := queryablehtml.Fetch(AtCoderURL + IncomingPath)
 	if err != nil {
