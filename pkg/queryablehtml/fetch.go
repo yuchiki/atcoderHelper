@@ -72,7 +72,5 @@ func SetFailingMockFetcher(t *testing.T, expectedURL string) func() {
 	return func() { Fetch = orig }
 }
 
-var (
-	// Fetch is a function to fetch contents. It's return value is a queryable node.
-	Fetch = fetch
-)
+// Fetch is a function to fetch contents. It's return value is a queryable node.
+var Fetch = fetch
