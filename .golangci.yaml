@@ -33,7 +33,6 @@ linters:
     - nakedret
     - nestif
     - nlreturn
-    - noctx
     - nolintlint
     - prealloc
     - predeclared

@@ -116,6 +116,16 @@ func ShouldNotHaveError() ErrorCheck {
 	}
 }
 
+func AnyError() ErrorCheck {
+	return func(t *testing.T, err error) {
+		t.Helper()
+
+		if err == nil {
+			t.Error("it must have any errors")
+		}
+	}
+}
+
 // CheckCommand checks if the command behaves expectedly.
 func CheckCommand(
 	t *testing.T,
