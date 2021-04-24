@@ -1,10 +1,15 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/yuchiki/atcoderHelper/pkg/queryablehtml"
 )
 
-const AtCoderURL = "https://atcoder.jp"
+const (
+	AtCoderURL   = "https://atcoder.jp"
+	IncomingPath = "/contests"
+)
 
 type ContestInfo struct {
 	URL  string
@@ -16,7 +21,7 @@ type ContestInfo struct {
 // テスト時に差し替えられるようにする
 
 func FetchIncoming() ([]ContestInfo, error) {
-	node, err := queryablehtml.Fetch(AtCoderURL + "/contests")
+	node, err := queryablehtml.Fetch(AtCoderURL + IncomingPath)
 	if err != nil {
 		return nil, err
 	}
@@ -36,6 +41,11 @@ func FetchIncoming() ([]ContestInfo, error) {
 		tds, err := tr.GetChildrenByTag("td")
 		if err != nil {
 			return ContestInfo{}, err
+		}
+
+		//nolint: gomnd
+		if len(tds) < 2 {
+			return ContestInfo{}, fmt.Errorf("second td does not exist: %w", queryablehtml.ErrNodeNotFound)
 		}
 
 		link := tds[1].GetChildByTag("a")
@@ -59,7 +69,8 @@ func FetchIncoming() ([]ContestInfo, error) {
 		}, nil
 	}
 
-	var contestInfos []ContestInfo
+	contestInfos := []ContestInfo{}
+
 	for _, tr := range contestTRs {
 		contestInfo, err := trToContestInfo(tr)
 		if err != nil {

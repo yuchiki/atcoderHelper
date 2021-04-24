@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func parseHTML(expression string, t *testing.T) QueryableNode {
+func parseHTML(t *testing.T, expression string) QueryableNode {
 	t.Helper()
 
 	doc, err := html.Parse(strings.NewReader(expression))
@@ -52,7 +52,7 @@ func TestGetNodeByID(t *testing.T) {
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			t.Helper()
-			node := parseHTML(testcase.html, t)
+			node := parseHTML(t, testcase.html)
 			expected := testcase.expected
 			targetNode := query(node)
 			if !errors.Is(targetNode.Err, testcase.err) {
@@ -100,7 +100,7 @@ func TestGetChildrenByTag(t *testing.T) {
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			t.Helper()
-			node := parseHTML(testcase.html, t)
+			node := parseHTML(t, testcase.html)
 			expected := testcase.expected
 			targetNodes, err := query(node)
 
@@ -149,7 +149,7 @@ func TestGetChildByTag(t *testing.T) {
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			t.Helper()
-			node := parseHTML(testcase.html, t)
+			node := parseHTML(t, testcase.html)
 			expected := testcase.expected
 			targetNode := query(node)
 			if !errors.Is(targetNode.Err, testcase.err) {
@@ -191,7 +191,7 @@ func TestGetAttr(t *testing.T) {
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			t.Helper()
-			node := parseHTML(testcase.html, t)
+			node := parseHTML(t, testcase.html)
 			expected := testcase.expected
 			actual, err := query(node)
 			if !errors.Is(err, testcase.err) {
@@ -233,7 +233,7 @@ func TestGetText(t *testing.T) {
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
 			t.Helper()
-			node := parseHTML(testcase.html, t)
+			node := parseHTML(t, testcase.html)
 			expected := testcase.expected
 			actual, err := query(node)
 			if !errors.Is(err, testcase.err) {
@@ -251,7 +251,7 @@ func TestString(t *testing.T) {
 	nodeString := "<div>foo</div>"
 	expected := inBody(nodeString)
 
-	node := parseHTML(nodeString, t)
+	node := parseHTML(t, nodeString)
 	actual := node.String()
 
 	if actual != expected {
