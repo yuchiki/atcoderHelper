@@ -3,6 +3,7 @@ WORKDIR /src
 COPY go.mod go.sum Makefile .git ./
 COPY cmd cmd
 COPY internal internal
+COPY pkg pkg
 RUN go mod download
 RUN make install
 
