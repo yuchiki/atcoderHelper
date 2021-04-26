@@ -23,14 +23,14 @@ func TestFetchIncoming(t *testing.T) {
 			name: "OK",
 			html: `<div id="contest-table-upcoming">
 					<div><div><table><tbody>
-									<tr><td></td><td><a href="url1">link1</a></td></tr>
-									<tr><td></td><td><a href="url2">link2</a></td></tr>
-									<tr><td></td><td><a href="url3">link3</a></td></tr>
+									<tr><td></td><td><a href="/contest/id1">link1</a></td></tr>
+									<tr><td></td><td><a href="/contest/id2">link2</a></td></tr>
+									<tr><td></td><td><a href="/contest/id3">link3</a></td></tr>
 					</tbody></table></div></div>`,
 			output: []ContestInfo{
-				{URL: "url1", Name: "link1"},
-				{URL: "url2", Name: "link2"},
-				{URL: "url3", Name: "link3"},
+				{ID: "id1", Name: "link1"},
+				{ID: "id2", Name: "link2"},
+				{ID: "id3", Name: "link3"},
 			},
 		},
 		{
