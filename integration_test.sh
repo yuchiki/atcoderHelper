@@ -1,5 +1,5 @@
 #!/bin/bash
 set -eux
 
-imageId=$(docker build -q .)
-docker run "$imageId"
+docker build -t ach_integration_test:latest .
+docker run ach_integration_test:latest

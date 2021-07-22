@@ -112,7 +112,7 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 
 	sampleDirName := path.Join(taskDirName, "sampleCases")
 
-	err = createSampleCases(sampleDirName, 5)
+	err = createSampleCases(sampleDirName, 5) //nolint:gomnd
 	if err != nil {
 		return err
 	}
