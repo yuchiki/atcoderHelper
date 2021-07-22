@@ -24,4 +24,5 @@ manipulates an AtCoder contest.
 * [ach](ach.md)	 - ach automates routine work you does when you participate AtCoder contests
 * [ach contest create](ach_contest_create.md)	 - creates contest directory
 * [ach contest incoming](ach_contest_incoming.md)	 - show incoming contests
+* [ach contest recent](ach_contest_recent.md)	 - show recent contests
 
