@@ -1,6 +1,6 @@
 ---
 builds:
-  - main: ./cmd/atcoderHelper/main.go
+  - main: ./cmd/ach/main.go
     binary: ach
     ldflags:
       - "-X github.com.yuchiki.atcoderHelper/internal/cmd/ach/version.version=\
