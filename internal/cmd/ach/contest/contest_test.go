@@ -9,8 +9,7 @@ import (
 func TestAch_Execute(t *testing.T) {
 	testutil.TestCaseTemplates{
 		testutil.HasName("contest"),
-		testutil.HasSubcommands("create"),
-		testutil.HasSubcommands("incoming"),
+		testutil.HasSubcommands("create", "incoming", "recent"),
 	}.
 		Build(NewContestCmd).
 		Run(t)

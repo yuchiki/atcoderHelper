@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/create"
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/incoming"
+	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/recent"
 	"github.com/yuchiki/atcoderHelper/internal/repository"
 )
 
@@ -22,4 +23,5 @@ func NewContestCmd() *cobra.Command {
 func registerSubcommands(cmd *cobra.Command) {
 	cmd.AddCommand(create.NewContestCreateCmd())
 	cmd.AddCommand(incoming.NewContestIncomingCmd(repository.FetchIncoming))
+	cmd.AddCommand(recent.NewContestRecentCmd(repository.FetchRecent))
 }
