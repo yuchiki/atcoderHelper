@@ -16,6 +16,7 @@ func NewTestCases(bareTestcases []Testcase) Testcases {
 				return false
 			}
 		}
+
 		return true
 	}
 
@@ -36,7 +37,6 @@ func NewTestCases(bareTestcases []Testcase) Testcases {
 
 func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
 	// fetched の validationは省く
-
 	unfetchedTestcases := []Testcase{}
 
 	for _, testcase := range ts.Testcases {

@@ -14,6 +14,8 @@ import (
 
 var openEditor = new(bool)
 
+const numSampleCases = 5
+
 // NewContestCreateCmd returns a new contest create command.
 func NewContestCreateCmd() *cobra.Command {
 	useDefaultTemplate := new(bool)
@@ -112,7 +114,7 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 
 	sampleDirName := path.Join(taskDirName, "sampleCases")
 
-	err = createSampleCases(sampleDirName, 5) //nolint:gomnd
+	err = createSampleCases(sampleDirName, numSampleCases)
 	if err != nil {
 		return err
 	}
