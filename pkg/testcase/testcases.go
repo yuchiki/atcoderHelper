@@ -33,3 +33,19 @@ func NewTestCases(bareTestcases []Testcase) Testcases {
 		},
 	}
 }
+
+func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
+	// fetched の validationは省く
+
+	unfetchedTestcases := []Testcase{}
+
+	for _, testcase := range ts.Testcases {
+		if !testcase.Fetched {
+			unfetchedTestcases = append(unfetchedTestcases, testcase)
+		}
+	}
+
+	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...)
+
+	return NewTestCases(joinedTestcases)
+}
