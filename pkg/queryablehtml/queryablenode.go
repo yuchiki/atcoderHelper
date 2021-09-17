@@ -37,6 +37,21 @@ func (n QueryableNode) GetNodeByID(id string) QueryableNode {
 	return QueryableNode{targetNode, err}
 }
 
+func (n QueryableNode) GetNodesByTag(tag string) []QueryableNode {
+	if n.Err != nil {
+		return nil
+	}
+
+	nodes := getNodesByTag(n.Node, tag)
+
+	queryableNodes := []QueryableNode{}
+	for _, node := range nodes {
+		queryableNodes = append(queryableNodes, QueryableNode{node, nil})
+	}
+
+	return queryableNodes
+}
+
 // GetChildrenByTag finds all the children nodes with the given tag.
 func (n QueryableNode) GetChildrenByTag(tag string) ([]QueryableNode, error) {
 	if n.Err != nil {
@@ -118,6 +133,20 @@ func getNodeByID(node *html.Node, id string) (*html.Node, error) {
 	}
 
 	return nil, fmt.Errorf("node with id '%s' is not found in children of %s: %w", id, nodeToString(node), ErrNodeNotFound)
+}
+
+func getNodesByTag(node *html.Node, tag string) []*html.Node {
+	nodes := []*html.Node{}
+
+	if node.Data == tag {
+		nodes = append(nodes, node)
+	}
+
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
+		nodes = append(nodes, getNodesByTag(child, tag)...)
+	}
+
+	return nodes
 }
 
 func getAttr(node *html.Node, key string) (string, error) {

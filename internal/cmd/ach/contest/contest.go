@@ -5,6 +5,7 @@ import (
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/create"
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/incoming"
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/recent"
+	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/testcase"
 	"github.com/yuchiki/atcoderHelper/internal/repository"
 )
 
@@ -24,4 +25,5 @@ func registerSubcommands(cmd *cobra.Command) {
 	cmd.AddCommand(create.NewContestCreateCmd())
 	cmd.AddCommand(incoming.NewContestIncomingCmd(repository.FetchIncoming))
 	cmd.AddCommand(recent.NewContestRecentCmd(repository.FetchRecent))
+	cmd.AddCommand(testcase.NewContestTestcaseCmd())
 }

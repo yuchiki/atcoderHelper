@@ -205,6 +205,37 @@ func TestGetAttr(t *testing.T) {
 	}
 }
 
+func TestGetNodesByTag(t *testing.T) {
+	query := func(node QueryableNode) []string {
+		texts := []string{}
+
+		for _, pre := range node.GetNodesByTag("pre") {
+			text, _ := pre.GetText()
+			texts = append(texts, text)
+		}
+
+		return texts
+	}
+
+	input := `
+		<div>
+			<pre>foo</pre>
+			<div>
+				<pre>bar</pre>
+				<pre>baz</pre>
+			</div>
+			<pre>qux</pre>
+		</div>
+	`
+
+	node := parseHTML(t, input)
+	expected := []string{"foo", "bar", "baz", "qux"}
+
+	if diff := cmp.Diff(query(node), expected); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func TestGetText(t *testing.T) {
 	query := func(node QueryableNode) (string, error) {
 		return node.GetNodeByID("root").GetText()
