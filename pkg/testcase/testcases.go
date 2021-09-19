@@ -45,7 +45,7 @@ func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
 		}
 	}
 
-	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...)
+	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...) //nolint:gocritic // this is intended.
 
 	return NewTestcases(joinedTestcases)
 }
