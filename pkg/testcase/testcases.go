@@ -9,7 +9,7 @@ type Summary struct {
 	Status Status
 }
 
-func NewTestCases(bareTestcases []Testcase) Testcases {
+func NewTestcases(bareTestcases []Testcase) Testcases {
 	allPass := func() bool {
 		for _, testcase := range bareTestcases {
 			if testcase.Status != Pass {
@@ -47,5 +47,5 @@ func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
 
 	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...)
 
-	return NewTestCases(joinedTestcases)
+	return NewTestcases(joinedTestcases)
 }
