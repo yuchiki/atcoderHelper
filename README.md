@@ -4,6 +4,8 @@ We do not have an English document yet.
 
 AtCoderのコンテストに出るとき、もしくは過去問を解く時の提携作業を楽をするためのシンプルなCLIアプリです。
 
+`ach help` で使用方法の説明を表示できます。
+
 # デモ
 
 デモはまだありません。
@@ -16,7 +18,7 @@ AtCoderのコンテストに出るとき、もしくは過去問を解く時の�
 
 このアプリは `$HOME` 以下に `.ach` directoryを作り、アプリで用いる設定を保管します。
 
-This application uses `$HOME/.ach` directory where a configuration file is placed.
+This application may overwrite `$HOME/.ach` directory where a configuration file is placed.
 
 # チュートリアル
 
@@ -24,7 +26,7 @@ This application uses `$HOME/.ach` directory where a configuration file is place
 
 # ドキュメント
 
-[ドキュメント](docs/cmd/ach.md) はこちらです。
+コマンドの[ドキュメント](docs/cmd/ach.md) はこちらです。各サブコマンドの使用法の説明が記載されています。
 
 
 # 開発フロー・リリースフロー・コントリビューション
