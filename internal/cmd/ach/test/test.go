@@ -5,14 +5,25 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path"
+	"strings"
 
 	"github.com/fatih/color"
+	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/cobra"
 	"github.com/yuchiki/atcoderHelper/internal/config"
+	"github.com/yuchiki/atcoderHelper/pkg/testcase"
+	"gopkg.in/yaml.v2"
 )
 
-const defaultSampleCasesDir = "sampleCases"
+const (
+	testcasesFile = "testcases.yaml"
+)
+
+var (
+	errorText   = color.Red
+	cautionText = color.Yellow
+	successText = color.Green
+)
 
 // Option is a functional option for NewTestCmd.
 type Option func(*opts)
@@ -24,13 +35,6 @@ type opts struct {
 type summary struct {
 	total int
 	pass  int
-}
-
-// SetSampleCasesDir changes sampleCaseDir from the default.
-func SetSampleCasesDir(dirName string) Option {
-	return func(opts *opts) {
-		opts.SampleCasesDir = defaultSampleCasesDir
-	}
 }
 
 // NewTestCmd returns test command
@@ -46,42 +50,32 @@ func NewTestCmd(options ...Option) *cobra.Command {
 	return &cobra.Command{
 		Use:   "test",
 		Short: "tests sample cases",
-		Long: `tests sample cases.
-
-The specification is not fixed. The below is the current temporal behaviour.
-
-
-- build.sh is run once/
-- when there exists case{n}.input for n in 1..N, tests are done for 1..N.
-- in each test,
-  - the command executes "cat case{n}.input | ./run.sh > case{n}.actual".
-  - Then, it compares case{n}.actual and case{n}.expected.
-  - If case{n}.input is "[skip ach test]\n", the case is skipped.
-`,
+		Long:  `tests sample cases.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			language, err := config.GetLanguage()
 			if err != nil {
 				return err
 			}
 
-			fmt.Println("building...")
-			if out, err := exec.Command("bash", "-c", language.Build).Output(); err != nil { //nolint: gosec
-				fmt.Print(string(out))
-
+			if err := build(language.Build); err != nil {
 				return err
 			}
-			fmt.Println("built.")
 
-			summary, err := testAll(opts.SampleCasesDir, language)
+			testcases, err := readTestCases(testcasesFile)
 			if err != nil {
 				return err
 			}
 
-			fmt.Printf("total: %d/%d ", summary.pass, summary.total)
-			if summary.pass == summary.total {
-				successText("success")
-			} else {
-				errorText("fail")
+			updatedTestcases, err := testAll(language.Run, testcases.Testcases)
+			if err != nil {
+				return err
+			}
+
+			showSummary(updatedTestcases)
+
+			err = writeTestcases(updatedTestcases, testcasesFile)
+			if err != nil {
+				return err
 			}
 
 			return nil
@@ -89,105 +83,147 @@ The specification is not fixed. The below is the current temporal behaviour.
 	}
 }
 
-func testAll(sampleDir string, language config.Language) (summary, error) {
-	i := 1
-	successes, cases := 0, 0
+func build(buildCommand string) error {
+	fmt.Println("building...")
 
-	for {
-		if _, err := os.Stat(testInputName(sampleDir, i)); err == nil {
-			result, err := testNthCase(sampleDir, language, i)
-			cases++
+	if out, err := exec.Command("bash", "-c", buildCommand).Output(); err != nil { //nolint: gosec
+		fmt.Print(string(out))
 
-			if err != nil {
-				return summary{}, err
-			}
-
-			if result {
-				successes++
-			}
-		} else {
-			break
-		}
-		i++
+		return err
 	}
 
-	return summary{
-		total: cases,
-		pass:  successes,
-	}, nil
+	fmt.Println("built.")
+
+	return nil
 }
 
-func testInputName(sampleCasesDir string, n int) string {
-	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.input", n))
-}
-
-func testExpectedName(sampleCasesDir string, n int) string {
-	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.expected", n))
-}
-
-func testActualName(sampleCasesDir string, n int) string {
-	return path.Join(sampleCasesDir, fmt.Sprintf("case%d.actual", n))
-}
-
-func testNthCase(sampleCasesDir string, language config.Language, n int) (bool, error) {
-	fmt.Printf("case %d: ", n)
-
-	inputBytes, err := ioutil.ReadFile(testInputName(sampleCasesDir, n))
+func readTestCases(file string) (testcase.Testcases, error) {
+	b, err := ioutil.ReadFile(file)
 	if err != nil {
-		return false, err
+		return testcase.Testcases{}, err
 	}
 
-	if string(inputBytes) == "[skip ach test]\n" {
-		cautionText("skip")
-
-		return true, nil
+	v := testcase.Testcases{}
+	if err := yaml.Unmarshal(b, &v); err != nil {
+		return testcase.Testcases{}, err
 	}
+
+	return v, nil
+}
+
+func writeTestcases(testcases testcase.Testcases, testcasesFile string) error {
+	b, err := yaml.Marshal(testcases)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(testcasesFile, b, os.ModeExclusive)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func testAll(runCommand string, testcases []testcase.Testcase) (testcase.Testcases, error) {
+	updatedTestCases := []testcase.Testcase{}
+
+	for _, singleTestcase := range testcases {
+		testedTestcase, err := testSingleTestcase(runCommand, singleTestcase)
+		if err != nil {
+			return testcase.Testcases{}, err
+		}
+		updatedTestCases = append(updatedTestCases, testedTestcase)
+	}
+
+	return testcase.NewTestcases(updatedTestCases), nil
+}
+
+func testSingleTestcase(runCommand string, tcase testcase.Testcase) (testcase.Testcase, error) {
+	fmt.Printf("\ntesting... ")
+
+	updatedTestcase := testcase.Testcase{
+		Fetched:  tcase.Fetched,
+		Input:    tcase.Input,
+		Expected: tcase.Expected,
+	}
+
+	tmpfile, err := ioutil.TempFile("", "tempfile-for-testing-")
+	if err != nil {
+		return testcase.Testcase{}, err
+	}
+
+	defer os.Remove(tmpfile.Name())
+
+	tmpfile.WriteString(tcase.Input)
 
 	shell := fmt.Sprintf(
-		"cat %s | %s > %s",
-		testInputName(sampleCasesDir, n),
-		language.Run,
-		testActualName(sampleCasesDir, n))
+		"cat %s | %s",
+		tmpfile.Name(),
+		runCommand,
+	)
 
-	if err := exec.Command("bash", "-c", shell).Run(); err != nil {
-		return false, err
-	}
-
-	actual, err := ioutil.ReadFile(testActualName(sampleCasesDir, n))
+	out, err := exec.Command("bash", "-c", shell).Output()
 	if err != nil {
-		return false, err
+		updatedTestcase.Status = testcase.NotPassed
+		return updatedTestcase, nil
 	}
 
-	expected, err := ioutil.ReadFile(testExpectedName(sampleCasesDir, n))
-	if err != nil {
-		return false, err
-	}
+	updatedTestcase.Actual = string(out)
 
-	if string(actual) == string(expected) {
+	if cmp.Diff(string(out), tcase.Expected) == "" {
 		successText("pass")
-
-		return true, nil
-	}
-
-	errorText("fail")
-
-	if string(expected) == "" {
-		fmt.Printf("  expected: (empty)\n")
+		updatedTestcase.Status = testcase.Pass
 	} else {
-		fmt.Printf("  expected: %s", string(expected))
+		errorText("fail")
+
+		fmt.Print("  expected:\n")
+		fmt.Print(indent(2, tcase.Expected))
+
+		fmt.Print("  but actual:\n")
+		fmt.Print(indent(2, string(out)))
+
+		updatedTestcase.Status = testcase.NotPassed
 	}
 
-	if string(actual) == "" {
-		fmt.Printf("  actual  : (empty)\n")
-	} else {
-		fmt.Printf("  actual  : %s", string(actual))
-	}
-
-	return false, nil
+	return updatedTestcase, nil
 }
 
-var (
-	errorText   = color.Red
-	cautionText = color.Yellow
-	successText = color.Green
-)
+func showSummary(testcases testcase.Testcases) {
+	fmt.Println()
+	fmt.Println("summary:")
+	fmt.Printf("%d/%d passed\n", testcases.Summary.Passed, testcases.Summary.Total)
+
+	fmt.Print("status: ")
+	if testcases.Summary.Status == testcase.Pass {
+		successText(testcases.Summary.Status.String())
+	} else {
+		errorText(testcases.Summary.Status.String())
+	}
+}
+
+func indent(indent int, text string) string {
+	indentation := ""
+	for i := 0; i < indent; i++ {
+		indentation = indentation + "  "
+	}
+
+	hasNewLineInEnd := text[len(text)-1] == '\n'
+
+	if hasNewLineInEnd {
+		text = text[0 : len(text)-1]
+	}
+
+	lines := strings.Split(text, "\n")
+
+	indentedLines := []string{}
+	for _, line := range lines {
+		indentedLines = append(indentedLines, indentation+line)
+	}
+
+	if hasNewLineInEnd {
+		indentedLines = append(indentedLines, "")
+	}
+
+	return strings.Join(indentedLines, "\n")
+}

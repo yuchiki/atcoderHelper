@@ -7,6 +7,8 @@ type Testcases struct {
 
 type Summary struct {
 	Status Status
+	Total  int
+	Passed int
 }
 
 func NewTestcases(bareTestcases []Testcase) Testcases {
@@ -27,10 +29,19 @@ func NewTestcases(bareTestcases []Testcase) Testcases {
 		status = NotPassed
 	}
 
+	numPassed := 0
+	for _, tcase := range bareTestcases {
+		if tcase.Status == Pass {
+			numPassed++
+		}
+	}
+
 	return Testcases{
 		Testcases: bareTestcases,
 		Summary: Summary{
 			Status: status,
+			Total:  len(bareTestcases),
+			Passed: numPassed,
 		},
 	}
 }
