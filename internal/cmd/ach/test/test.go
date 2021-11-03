@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	testcasesFile = "testcases.yaml"
+	TestcasesFile = "testcases.yaml"
 )
 
 var (
@@ -61,7 +61,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 				return err
 			}
 
-			testcases, err := readTestCases(testcasesFile)
+			testcases, err := readTestCases(TestcasesFile)
 			if err != nil {
 				return err
 			}
@@ -73,7 +73,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 
 			showSummary(updatedTestcases)
 
-			err = writeTestcases(updatedTestcases, testcasesFile)
+			err = writeTestcases(updatedTestcases, TestcasesFile)
 			if err != nil {
 				return err
 			}

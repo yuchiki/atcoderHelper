@@ -2,12 +2,14 @@ package create
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 
 	"github.com/spf13/cobra"
+	cmdtest "github.com/yuchiki/atcoderHelper/internal/cmd/ach/test"
 	"github.com/yuchiki/atcoderHelper/internal/config"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -112,9 +114,7 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 		return err
 	}
 
-	sampleDirName := path.Join(taskDirName, "sampleCases")
-
-	err = createSampleCases(sampleDirName, numSampleCases)
+	err = createTestcases(path.Join(taskDirName, cmdtest.TestcasesFile))
 	if err != nil {
 		return err
 	}
@@ -122,34 +122,9 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 	return nil
 }
 
-func createSampleCases(sampleDirName string, n int) error {
-	if output, err := exec.Command("mkdir", sampleDirName).Output(); err != nil {
-		fmt.Print(output)
-
+func createTestcases(testcasesFile string) error {
+	if err := ioutil.WriteFile(testcasesFile, []byte("testcases: []"), 0666); err != nil {
 		return err
-	}
-
-	for i := 1; i <= n; i++ {
-		inputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.input", i))
-
-		output, err := exec.Command( //nolint:gosec // TODO: fix this and all the execs.
-			"bash",
-			"-c",
-			fmt.Sprintf(`echo "[skip ach test]" > %s`, inputFileName)).
-			CombinedOutput()
-		if err != nil {
-			fmt.Printf("%s can not be initialized", inputFileName)
-			fmt.Print(output)
-
-			return err
-		}
-
-		outputFileName := path.Join(sampleDirName, fmt.Sprintf("case%d.expected", i))
-
-		err = exec.Command("touch", outputFileName).Run()
-		if err != nil {
-			return err
-		}
 	}
 
 	return nil
