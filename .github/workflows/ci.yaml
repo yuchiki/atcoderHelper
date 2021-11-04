@@ -49,6 +49,8 @@ jobs:
         run: echo "::add-matcher::.github/problem-matcher.json"
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.43.0
       - name: yamllint
         uses: ibiqlik/action-yamllint@v3
       - name: setup go
