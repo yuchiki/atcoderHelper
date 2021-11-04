@@ -25,7 +25,11 @@ func TestNewTestcases(t *testing.T) {
 					{Status: Pass},
 					{Status: Pass},
 				},
-				Summary: Summary{Status: Pass},
+				Summary: Summary{
+					Status: Pass,
+					Total:  3,
+					Passed: 3,
+				},
 			},
 		},
 		{
@@ -41,7 +45,11 @@ func TestNewTestcases(t *testing.T) {
 					{Status: Pass},
 					{Status: NotPassed},
 				},
-				Summary: Summary{Status: NotPassed},
+				Summary: Summary{
+					Status: NotPassed,
+					Total:  3,
+					Passed: 2,
+				},
 			},
 		},
 	}
