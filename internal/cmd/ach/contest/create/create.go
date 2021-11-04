@@ -121,7 +121,7 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 }
 
 func createTestcases(testcasesFile string) error {
-	if err := ioutil.WriteFile(testcasesFile, []byte("testcases: []"), 0o666); err != nil { //nolint:gosec
+	if err := ioutil.WriteFile(testcasesFile, []byte("testcases: []"), 0o666); err != nil { //nolint:gosec,gomnd
 		return err
 	}
 
