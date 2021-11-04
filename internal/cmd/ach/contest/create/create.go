@@ -16,8 +16,6 @@ import (
 
 var openEditor = new(bool)
 
-const numSampleCases = 5
-
 // NewContestCreateCmd returns a new contest create command.
 func NewContestCreateCmd() *cobra.Command {
 	useDefaultTemplate := new(bool)
@@ -123,7 +121,7 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 }
 
 func createTestcases(testcasesFile string) error {
-	if err := ioutil.WriteFile(testcasesFile, []byte("testcases: []"), 0o666); err != nil {
+	if err := ioutil.WriteFile(testcasesFile, []byte("testcases: []"), 0o666); err != nil { //nolint:gosec
 		return err
 	}
 

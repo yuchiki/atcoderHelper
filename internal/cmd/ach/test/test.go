@@ -20,8 +20,8 @@ const (
 )
 
 var (
-	errorText   = color.Red
-	cautionText = color.Yellow
+	errorText = color.Red
+	// cautionText = color.Yellow
 	successText = color.Green
 )
 
@@ -29,18 +29,13 @@ var (
 type Option func(*opts)
 
 type opts struct {
-	SampleCasesDir string
-}
-
-type summary struct {
-	total int
-	pass  int
+	testcaseFile string
 }
 
 // NewTestCmd returns test command
 func NewTestCmd(options ...Option) *cobra.Command {
 	opts := opts{
-		SampleCasesDir: "sampleCases",
+		testcaseFile: TestcasesFile,
 	}
 
 	for _, option := range options {
@@ -61,7 +56,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 				return err
 			}
 
-			testcases, err := readTestCases(TestcasesFile)
+			testcases, err := readTestCases(opts.testcaseFile)
 			if err != nil {
 				return err
 			}
@@ -73,7 +68,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 
 			showSummary(updatedTestcases)
 
-			err = writeTestcases(updatedTestcases, TestcasesFile)
+			err = writeTestcases(updatedTestcases, opts.testcaseFile)
 			if err != nil {
 				return err
 			}
@@ -86,7 +81,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 func build(buildCommand string) error {
 	fmt.Println("building...")
 
-	if out, err := exec.Command("bash", "-c", buildCommand).Output(); err != nil { //nolint: gosec
+	if out, err := exec.Command("bash", "-c", buildCommand).Output(); err != nil {
 		fmt.Print(string(out))
 
 		return err
@@ -133,6 +128,7 @@ func testAll(runCommand string, testcases []testcase.Testcase) (testcase.Testcas
 		if err != nil {
 			return testcase.Testcases{}, err
 		}
+
 		updatedTestCases = append(updatedTestCases, testedTestcase)
 	}
 
@@ -155,7 +151,9 @@ func testSingleTestcase(runCommand string, tcase testcase.Testcase) (testcase.Te
 
 	defer os.Remove(tmpfile.Name())
 
-	tmpfile.WriteString(tcase.Input)
+	if _, err := tmpfile.WriteString(tcase.Input); err != nil {
+		return testcase.Testcase{}, err
+	}
 
 	shell := fmt.Sprintf(
 		"cat %s | %s",
@@ -166,6 +164,7 @@ func testSingleTestcase(runCommand string, tcase testcase.Testcase) (testcase.Te
 	out, err := exec.Command("bash", "-c", shell).Output()
 	if err != nil {
 		updatedTestcase.Status = testcase.NotPassed
+
 		return updatedTestcase, nil
 	}
 
@@ -173,15 +172,16 @@ func testSingleTestcase(runCommand string, tcase testcase.Testcase) (testcase.Te
 
 	if cmp.Diff(string(out), tcase.Expected) == "" {
 		successText("pass")
+
 		updatedTestcase.Status = testcase.Pass
 	} else {
 		errorText("fail")
 
 		fmt.Print("  expected:\n")
-		fmt.Print(indent(2, tcase.Expected))
+		fmt.Print(indent(2, tcase.Expected)) //nolint:gomnd
 
 		fmt.Print("  but actual:\n")
-		fmt.Print(indent(2, string(out)))
+		fmt.Print(indent(2, string(out))) //nolint:gomnd
 
 		updatedTestcase.Status = testcase.NotPassed
 	}
@@ -195,6 +195,7 @@ func showSummary(testcases testcase.Testcases) {
 	fmt.Printf("%d/%d passed\n", testcases.Summary.Passed, testcases.Summary.Total)
 
 	fmt.Print("status: ")
+
 	if testcases.Summary.Status == testcase.Pass {
 		successText(testcases.Summary.Status.String())
 	} else {
@@ -205,7 +206,7 @@ func showSummary(testcases testcase.Testcases) {
 func indent(indent int, text string) string {
 	indentation := ""
 	for i := 0; i < indent; i++ {
-		indentation = indentation + "  "
+		indentation += "  "
 	}
 
 	hasNewLineInEnd := text[len(text)-1] == '\n'

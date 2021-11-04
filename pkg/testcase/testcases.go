@@ -30,6 +30,7 @@ func NewTestcases(bareTestcases []Testcase) Testcases {
 	}
 
 	numPassed := 0
+
 	for _, tcase := range bareTestcases {
 		if tcase.Status == Pass {
 			numPassed++
@@ -56,7 +57,7 @@ func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
 		}
 	}
 
-	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...) //nolint:gocritic // this is intended.
+	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...)
 
 	return NewTestcases(joinedTestcases)
 }
