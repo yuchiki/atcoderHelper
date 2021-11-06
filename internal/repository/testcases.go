@@ -25,6 +25,7 @@ func FetchTestcases(contest string, task string) ([]Testcase, error) {
 	}
 
 	inputs := []string{}
+
 	for _, section := range node.GetNodesByTag("section") {
 		title, err := section.GetChildByTag("h3").GetText()
 		if err != nil {
@@ -42,6 +43,7 @@ func FetchTestcases(contest string, task string) ([]Testcase, error) {
 	}
 
 	expecteds := []string{}
+
 	for _, section := range node.GetNodesByTag("section") {
 		title, err := section.GetChildByTag("h3").GetText()
 		if err != nil {

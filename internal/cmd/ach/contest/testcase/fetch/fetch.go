@@ -3,6 +3,7 @@ package fetch
 import (
 	"github.com/spf13/cobra"
 	"github.com/yuchiki/atcoderHelper/internal/repository"
+	"github.com/yuchiki/atcoderHelper/pkg/testcase"
 )
 
 func NewTestcaseFetchCmd(fetcher func(contest string, task string) ([]repository.Testcase, error)) *cobra.Command {
@@ -15,12 +16,21 @@ func NewTestcaseFetchCmd(fetcher func(contest string, task string) ([]repository
 		Long:  "fetch testcases.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			testcases, err := fetcher(*contest, *task)
+			rawTestcases, err := fetcher(*contest, *task)
 			if err != nil {
 				return err
 			}
 
-			cmd.Print(testcases) // とりあえずdebug出力
+			existingTestCases, err := testcase.ReadFrom(testcase.TestcasesFile)
+			if err != nil {
+				return err
+			}
+
+			mergedTestcases := existingTestCases.MergeWithFetched(rawTestcases)
+
+			if err := mergedTestcases.WriteTo(testcase.TestcasesFile); err != nil {
+				return err
+			}
 
 			return nil
 		},

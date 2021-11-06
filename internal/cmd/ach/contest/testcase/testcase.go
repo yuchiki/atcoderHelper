@@ -2,7 +2,6 @@ package testcase
 
 import (
 	"github.com/spf13/cobra"
-
 	"github.com/yuchiki/atcoderHelper/internal/cmd/ach/contest/testcase/fetch"
 	"github.com/yuchiki/atcoderHelper/internal/repository"
 )

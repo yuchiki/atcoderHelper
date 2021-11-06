@@ -1,5 +1,15 @@
 package testcase
 
+import (
+	"io/ioutil"
+	"os"
+
+	"github.com/yuchiki/atcoderHelper/internal/repository"
+	"gopkg.in/yaml.v2"
+)
+
+var TestcasesFile = "testcases.yaml"
+
 type Testcases struct {
 	Testcases []Testcase
 	Summary   Summary
@@ -47,7 +57,7 @@ func NewTestcases(bareTestcases []Testcase) Testcases {
 	}
 }
 
-func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
+func (ts Testcases) MergeWithFetched(fetched []repository.Testcase) Testcases {
 	// fetched の validationは省く
 	unfetchedTestcases := []Testcase{}
 
@@ -57,7 +67,53 @@ func (ts Testcases) MergeWithFetched(fetched Testcases) Testcases {
 		}
 	}
 
-	joinedTestcases := append(fetched.Testcases, unfetchedTestcases...) //nolint:gocritic // this is intended.
+	fetchedTestcases := []Testcase{}
+
+	for _, rawTestcase := range fetched {
+		tcase := Testcase{
+			Fetched:  true,
+			Input:    rawTestcase.Input,
+			Expected: rawTestcase.Expected,
+			Status:   Untested,
+		}
+
+		fetchedTestcases = append(fetchedTestcases, tcase)
+	}
+
+	joinedTestcases := append(fetchedTestcases, unfetchedTestcases...) //nolint:gocritic // this is intended.
 
 	return NewTestcases(joinedTestcases)
+}
+
+func ReadFrom(file string) (Testcases, error) {
+	_, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		return Testcases{}, nil
+	}
+
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		return Testcases{}, err
+	}
+
+	v := Testcases{}
+	if err := yaml.Unmarshal(b, &v); err != nil {
+		return Testcases{}, err
+	}
+
+	return v, nil
+}
+
+func (ts *Testcases) WriteTo(file string) error {
+	b, err := yaml.Marshal(ts)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(file, b, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
