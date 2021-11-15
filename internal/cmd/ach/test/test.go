@@ -12,11 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/yuchiki/atcoderHelper/internal/config"
 	"github.com/yuchiki/atcoderHelper/pkg/testcase"
-	"gopkg.in/yaml.v2"
-)
-
-const (
-	TestcasesFile = "testcases.yaml"
 )
 
 var (
@@ -35,7 +30,7 @@ type opts struct {
 // NewTestCmd returns test command
 func NewTestCmd(options ...Option) *cobra.Command {
 	opts := opts{
-		testcaseFile: TestcasesFile,
+		testcaseFile: testcase.TestcasesFile,
 	}
 
 	for _, option := range options {
@@ -56,7 +51,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 				return err
 			}
 
-			testcases, err := readTestCases(opts.testcaseFile)
+			testcases, err := testcase.ReadFrom(opts.testcaseFile)
 			if err != nil {
 				return err
 			}
@@ -68,7 +63,7 @@ func NewTestCmd(options ...Option) *cobra.Command {
 
 			showSummary(updatedTestcases)
 
-			err = writeTestcases(updatedTestcases, opts.testcaseFile)
+			err = updatedTestcases.WriteTo(opts.testcaseFile)
 			if err != nil {
 				return err
 			}
@@ -88,34 +83,6 @@ func build(buildCommand string) error {
 	}
 
 	fmt.Println("built.")
-
-	return nil
-}
-
-func readTestCases(file string) (testcase.Testcases, error) {
-	b, err := ioutil.ReadFile(file)
-	if err != nil {
-		return testcase.Testcases{}, err
-	}
-
-	v := testcase.Testcases{}
-	if err := yaml.Unmarshal(b, &v); err != nil {
-		return testcase.Testcases{}, err
-	}
-
-	return v, nil
-}
-
-func writeTestcases(testcases testcase.Testcases, testcasesFile string) error {
-	b, err := yaml.Marshal(testcases)
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(testcasesFile, b, os.ModeExclusive)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }

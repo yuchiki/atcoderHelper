@@ -9,8 +9,8 @@ import (
 	"path"
 
 	"github.com/spf13/cobra"
-	cmdtest "github.com/yuchiki/atcoderHelper/internal/cmd/ach/test"
 	"github.com/yuchiki/atcoderHelper/internal/config"
+	"github.com/yuchiki/atcoderHelper/pkg/testcase"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -112,7 +112,7 @@ func initializeTaskDirectory(absTemplateDir, contestName, taskName string) error
 		return err
 	}
 
-	err = createTestcases(path.Join(taskDirName, cmdtest.TestcasesFile))
+	err = createTestcases(path.Join(taskDirName, testcase.TestcasesFile))
 	if err != nil {
 		return err
 	}
