@@ -1,3 +1,10 @@
+# ARCHIVED
+
+このレポジトリはarchivedされました。
+後継は https://github.com/yuchiki/atcoder_helper です。
+
+
+
 We do not have an English document yet.
 
 # 概要
